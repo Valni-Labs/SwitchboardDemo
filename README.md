@@ -2,8 +2,8 @@
 
 Minimal macOS chat app showing the two SDKs working together:
 
-- [Switchboard](https://github.com/Benovi-Labs/Switchboard) routes the chat completion.
-- [Linecard](https://github.com/Benovi-Labs/Linecard) supplies the model catalog that feeds the picker.
+- [Switchboard](https://valni.ai) routes the chat completion.
+- [Linecard](https://valni.ai/linecard) supplies the model catalog that feeds the picker.
 
 One window: pick a model, type, get a streamed reply.
 
