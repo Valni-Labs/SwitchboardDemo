@@ -7,6 +7,14 @@ Minimal macOS chat app showing the two SDKs working together:
 
 One window: pick a model, type, get a streamed reply.
 
+## Get a key
+
+1. Sign in to the portal at [valni.ai/platform](https://valni.ai/platform).
+2. Open the **Switchboard** tab. Under API keys, name the key (for example `switchboard-demo`), leave the scope on **Company**, and mint.
+3. Copy the plaintext `swb_...` from the modal — it is shown once and never again. Only a hash is stored server-side.
+
+If the mint is rejected, complete your account entity setup (company name and entity type) on the same tab first.
+
 ## Run
 
 ```sh
@@ -14,6 +22,16 @@ SWITCHBOARD_API_KEY=swb_... swift run
 ```
 
 Or open `Package.swift` in Xcode, set the environment variable in the scheme, and run the `SwitchboardDemo` target.
+
+### Against a non-production stack
+
+Mint the key in that stack's portal instead (dev: [dev.valni.app/platform](https://dev.valni.app/platform)) and point the app at the matching Switchboard:
+
+```sh
+SWITCHBOARD_API_KEY=swb_... SWITCHBOARD_BASE_URL=https://switchboard-dev.valni.app swift run
+```
+
+Keys are stack-specific — a dev-minted key is invalid against production and vice versa.
 
 ## Environment
 
