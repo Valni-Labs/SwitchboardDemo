@@ -23,16 +23,6 @@ SWITCHBOARD_API_KEY=swb_... swift run
 
 Or open `Package.swift` in Xcode, set the environment variable in the scheme, and run the `SwitchboardDemo` target.
 
-### Against a non-production stack
-
-Mint the key in that stack's portal instead (dev: [dev.valni.app/platform](https://dev.valni.app/platform)) and point the app at the matching Switchboard:
-
-```sh
-SWITCHBOARD_API_KEY=swb_... SWITCHBOARD_BASE_URL=https://switchboard-dev.valni.app swift run
-```
-
-Keys are stack-specific — a dev-minted key is invalid against production and vice versa.
-
 ## Environment
 
 | Variable | Required | Purpose |
