@@ -7,6 +7,14 @@ Minimal macOS chat app showing the two SDKs working together:
 
 One window: pick a model, type, get a streamed reply.
 
+## Get a key
+
+1. Sign in to the portal at [valni.ai/platform](https://valni.ai/platform).
+2. Open the **Switchboard** tab. Under API keys, name the key (for example `switchboard-demo`), leave the scope on **Company**, and mint.
+3. Copy the plaintext `swb_...` from the modal — it is shown once and never again. Only a hash is stored server-side.
+
+If the mint is rejected, complete your account entity setup (company name and entity type) on the same tab first.
+
 ## Run
 
 ```sh
