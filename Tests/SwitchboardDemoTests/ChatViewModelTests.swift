@@ -14,7 +14,7 @@ struct FakeChatStream: ChatStreaming {
     let pieces: [String]
     var error: Error? = nil
 
-    func streamReply(modelID: String, history: [TranscriptEntry]) -> AsyncThrowingStream<String, Error> {
+    func streamReply(model: ModelOption, history: [TranscriptEntry]) -> AsyncThrowingStream<String, Error> {
         AsyncThrowingStream { continuation in
             for piece in pieces {
                 continuation.yield(piece)
@@ -24,6 +24,25 @@ struct FakeChatStream: ChatStreaming {
             } else {
                 continuation.finish()
             }
+        }
+    }
+}
+
+final class RecordingChatStream: ChatStreaming, @unchecked Sendable {
+    let pieces: [String]
+    private(set) var capturedModel: ModelOption?
+
+    init(pieces: [String]) {
+        self.pieces = pieces
+    }
+
+    func streamReply(model: ModelOption, history: [TranscriptEntry]) -> AsyncThrowingStream<String, Error> {
+        capturedModel = model
+        return AsyncThrowingStream { continuation in
+            for piece in pieces {
+                continuation.yield(piece)
+            }
+            continuation.finish()
         }
     }
 }
@@ -95,6 +114,20 @@ struct ChatViewModelTests {
         #expect(viewModel.canSend == false)
     }
 
+    @Test func sendForwardsSelectedModelWithTransportToService() async {
+        let recorder = RecordingChatStream(pieces: ["ok"])
+        let anthropicOption = ModelOption(id: "claude-opus-4-8", displayName: "Claude Opus 4.8", transport: .anthropicMessages)
+        let viewModel = ChatViewModel(
+            modelCatalog: FakeModelCatalog(models: [anthropicOption]),
+            chatService: recorder
+        )
+        await viewModel.loadModels()
+        viewModel.draft = "Hi"
+        await viewModel.send()
+        #expect(recorder.capturedModel?.id == "claude-opus-4-8")
+        #expect(recorder.capturedModel?.transport == .anthropicMessages)
+    }
+
     @Test func blankDraftCannotSend() async {
         let viewModel = ChatViewModel(
             modelCatalog: FakeModelCatalog(models: options),
@@ -105,6 +138,17 @@ struct ChatViewModelTests {
         #expect(viewModel.canSend == false)
         await viewModel.send()
         #expect(viewModel.transcript.isEmpty)
+    }
+}
+
+struct ModelTransportTests {
+    @Test func mapsAnthropicWireFormatToMessagesTransport() {
+        #expect(ModelTransport.from(wireFormat: "anthropic-messages") == .anthropicMessages)
+    }
+
+    @Test func mapsOtherWireFormatsToOpenAICompatible() {
+        #expect(ModelTransport.from(wireFormat: "openai-compat") == .openAICompatible)
+        #expect(ModelTransport.from(wireFormat: nil) == .openAICompatible)
     }
 }
 

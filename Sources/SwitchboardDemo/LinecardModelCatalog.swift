@@ -14,8 +14,18 @@ final class LinecardModelCatalog: ModelCatalogProviding, Sendable {
         case .unchanged(let catalog), .updated(let catalog):
             catalog
         }
+        let wireFormatByProvider = Dictionary(
+            catalog.providers.map { ($0.id, $0.wireFormat) },
+            uniquingKeysWith: { first, _ in first }
+        )
         return catalog.models
-            .map { ModelOption(id: $0.id, displayName: $0.displayName) }
+            .map { model in
+                ModelOption(
+                    id: model.id,
+                    displayName: model.displayName,
+                    transport: .from(wireFormat: wireFormatByProvider[model.provider] ?? nil)
+                )
+            }
             .sorted { $0.displayName.localizedCaseInsensitiveCompare($1.displayName) == .orderedAscending }
     }
 }

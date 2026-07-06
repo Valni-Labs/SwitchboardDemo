@@ -48,7 +48,8 @@ final class ChatViewModel {
     }
 
     func send() async {
-        guard canSend, let chatService, let selectedModelID else { return }
+        guard canSend, let chatService, let selectedModelID,
+              let model = models.first(where: { $0.id == selectedModelID }) else { return }
         let text = draft.trimmingCharacters(in: .whitespacesAndNewlines)
         draft = ""
         statusMessage = nil
@@ -58,7 +59,7 @@ final class ChatViewModel {
         isStreaming = true
         defer { isStreaming = false }
         do {
-            for try await piece in chatService.streamReply(modelID: selectedModelID, history: history) {
+            for try await piece in chatService.streamReply(model: model, history: history) {
                 transcript[transcript.count - 1].text += piece
             }
         } catch {

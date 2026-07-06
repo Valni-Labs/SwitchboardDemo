@@ -1,3 +1,3 @@
 protocol ChatStreaming: Sendable {
-    func streamReply(modelID: String, history: [TranscriptEntry]) -> AsyncThrowingStream<String, Error>
+    func streamReply(model: ModelOption, history: [TranscriptEntry]) -> AsyncThrowingStream<String, Error>
 }
