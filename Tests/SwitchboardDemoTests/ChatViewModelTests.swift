@@ -127,11 +127,11 @@ struct DemoConfigurationTests {
     @Test func valuesPassThrough() throws {
         let configuration = try DemoConfiguration.fromEnvironment([
             "SWITCHBOARD_API_KEY": "swb_test",
-            "SWITCHBOARD_BASE_URL": "https://switchboard-dev.valni.app",
+            "SWITCHBOARD_BASE_URL": "https://switchboard.example.com",
             "SWITCHBOARD_END_USER_ID": "demo-user",
         ])
         #expect(configuration.apiKey == "swb_test")
-        #expect(configuration.baseURL.absoluteString == "https://switchboard-dev.valni.app")
+        #expect(configuration.baseURL.absoluteString == "https://switchboard.example.com")
         #expect(configuration.endUserID == "demo-user")
     }
 }
