@@ -1,3 +1,3 @@
 protocol ModelCatalogProviding: Sendable {
-    func loadModels() async throws -> [ModelOption]
+    func loadModels(applicationKey: String) async throws -> [ModelOption]
 }

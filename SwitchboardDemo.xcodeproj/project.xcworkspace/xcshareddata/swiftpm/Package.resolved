@@ -1,22 +1,13 @@
 {
-  "originHash" : "b9c55e24fe1aa5ecc41c4d63632888dbd7d6c0bc25b1e8eea3b7f7550456cb0f",
+  "originHash" : "d4ae2f700ff332ed38602ed7dd75782470bd822d963ac975dea12ec7bf9949fb",
   "pins" : [
-    {
-      "identity" : "linecard-swift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/Benovi-Labs/linecard-swift",
-      "state" : {
-        "revision" : "28af6b0944e4bc6022381e7c6d8d792ea21db358",
-        "version" : "0.1.0"
-      }
-    },
     {
       "identity" : "switchboard-swift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Benovi-Labs/switchboard-swift",
       "state" : {
-        "revision" : "a1ebaa8ce14f4129d21417fc3b2b278e4e5fb8f2",
-        "version" : "0.1.0"
+        "revision" : "d9492fe68a8c13d858526b8ecd22c276d8ab51e7",
+        "version" : "0.2.0"
       }
     }
   ],

@@ -3,3 +3,4 @@
 .DS_Store
 .envrc
 xcuserdata/
+**/xcshareddata/WorkspaceSettings.xcsettings

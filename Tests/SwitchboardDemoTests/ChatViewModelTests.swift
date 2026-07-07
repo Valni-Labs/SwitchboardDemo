@@ -5,8 +5,23 @@ import Testing
 struct FakeModelCatalog: ModelCatalogProviding {
     let models: [ModelOption]
 
-    func loadModels() async throws -> [ModelOption] {
+    func loadModels(applicationKey: String) async throws -> [ModelOption] {
         models
+    }
+}
+
+@MainActor
+final class KeyMutatingCatalog: ModelCatalogProviding {
+    let models: [ModelOption]
+    var onLoad: (() -> Void)?
+
+    init(models: [ModelOption]) {
+        self.models = models
+    }
+
+    func loadModels(applicationKey: String) async throws -> [ModelOption] {
+        onLoad?()
+        return models
     }
 }
 
@@ -14,7 +29,12 @@ struct FakeChatStream: ChatStreaming {
     let pieces: [String]
     var error: Error? = nil
 
-    func streamReply(modelID: String, history: [TranscriptEntry]) -> AsyncThrowingStream<String, Error> {
+    func streamReply(
+        model: ModelOption,
+        applicationKey: String,
+        endUserKey: String?,
+        history: [TranscriptEntry]
+    ) -> AsyncThrowingStream<String, Error> {
         AsyncThrowingStream { continuation in
             for piece in pieces {
                 continuation.yield(piece)
@@ -35,25 +55,64 @@ struct FakeStreamError: LocalizedError {
 @MainActor
 struct ChatViewModelTests {
     private let options = [
-        ModelOption(id: "anthropic/claude-sonnet-4-5", displayName: "Claude Sonnet 4.5"),
-        ModelOption(id: "openai/gpt-5", displayName: "GPT-5"),
+        ModelOption(id: "anthropic/claude-sonnet-4-5", displayName: "Claude Sonnet 4.5", wireFormat: "anthropic-messages", contextWindow: 200_000),
+        ModelOption(id: "openai/gpt-5", displayName: "GPT-5", wireFormat: "openai-compat", contextWindow: 400_000),
     ]
 
-    @Test func loadModelsPopulatesAndSelectsFirst() async {
+    private func makeViewModel(
+        models: [ModelOption]? = nil,
+        pieces: [String] = [],
+        streamError: Error? = nil
+    ) -> ChatViewModel {
+        ChatViewModel(
+            modelCatalog: FakeModelCatalog(models: models ?? options),
+            chatService: FakeChatStream(pieces: pieces, error: streamError)
+        )
+    }
+
+    @Test func loadModelsRequiresApplicationKey() async {
+        let viewModel = makeViewModel()
+        await viewModel.loadModels()
+        #expect(viewModel.models.isEmpty)
+        #expect(viewModel.selectedModelID == nil)
+    }
+
+    @Test func loadModelsDropsResultsWhenKeyChangesDuringLoad() async {
+        let catalog = KeyMutatingCatalog(models: options)
         let viewModel = ChatViewModel(
-            modelCatalog: FakeModelCatalog(models: options),
+            modelCatalog: catalog,
             chatService: FakeChatStream(pieces: [])
         )
+        viewModel.applicationKey = "swb_original"
+        catalog.onLoad = { viewModel.applicationKey = "swb_changed" }
+        await viewModel.loadModels()
+        #expect(viewModel.models.isEmpty)
+        #expect(viewModel.selectedModelID == nil)
+    }
+
+    @Test func loadModelsClearsModelsWhenKeyRemoved() async {
+        let viewModel = makeViewModel()
+        viewModel.applicationKey = "swb_test"
+        await viewModel.loadModels()
+        #expect(!viewModel.models.isEmpty)
+        viewModel.applicationKey = ""
+        await viewModel.loadModels()
+        #expect(viewModel.models.isEmpty)
+        #expect(viewModel.selectedModelID == nil)
+    }
+
+    @Test func loadModelsPopulatesAndSelectsFirst() async {
+        let viewModel = makeViewModel()
+        viewModel.applicationKey = "swb_test"
         await viewModel.loadModels()
         #expect(viewModel.models == options)
         #expect(viewModel.selectedModelID == options[0].id)
+        #expect(viewModel.statusMessage == nil)
     }
 
     @Test func sendAppendsUserEntryAndAccumulatesAssistantStream() async {
-        let viewModel = ChatViewModel(
-            modelCatalog: FakeModelCatalog(models: options),
-            chatService: FakeChatStream(pieces: ["Hel", "lo"])
-        )
+        let viewModel = makeViewModel(pieces: ["Hel", "lo"])
+        viewModel.applicationKey = "swb_test"
         await viewModel.loadModels()
         viewModel.draft = "Hi there"
         await viewModel.send()
@@ -67,10 +126,8 @@ struct ChatViewModelTests {
     }
 
     @Test func streamFailureRemovesEmptyAssistantEntryAndSurfacesError() async {
-        let viewModel = ChatViewModel(
-            modelCatalog: FakeModelCatalog(models: options),
-            chatService: FakeChatStream(pieces: [], error: FakeStreamError())
-        )
+        let viewModel = makeViewModel(streamError: FakeStreamError())
+        viewModel.applicationKey = "swb_test"
         await viewModel.loadModels()
         viewModel.draft = "Hi"
         await viewModel.send()
@@ -79,12 +136,11 @@ struct ChatViewModelTests {
         #expect(viewModel.statusMessage == "stream failed")
     }
 
-    @Test func emptyApiKeyBlocksSend() async {
-        let viewModel = ChatViewModel(
-            modelCatalog: FakeModelCatalog(models: options),
-            chatService: nil
-        )
+    @Test func emptyApplicationKeyBlocksSend() async {
+        let viewModel = makeViewModel()
+        viewModel.applicationKey = "swb_test"
         await viewModel.loadModels()
+        viewModel.applicationKey = "   "
         viewModel.draft = "Hi"
         #expect(viewModel.canSend == false)
         await viewModel.send()
@@ -98,10 +154,8 @@ struct ChatViewModelTests {
     }
 
     @Test func blankDraftCannotSend() async {
-        let viewModel = ChatViewModel(
-            modelCatalog: FakeModelCatalog(models: options),
-            chatService: FakeChatStream(pieces: [])
-        )
+        let viewModel = makeViewModel()
+        viewModel.applicationKey = "swb_test"
         await viewModel.loadModels()
         viewModel.draft = "   "
         #expect(viewModel.canSend == false)

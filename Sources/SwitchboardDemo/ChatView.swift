@@ -5,18 +5,27 @@ struct ChatView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            HStack(alignment: .top) {
-                Picker("Model", selection: $viewModel.selectedModelID) {
-                    ForEach(viewModel.models) { option in
-                        Text(option.displayName).tag(Optional(option.id))
+            HStack(alignment: .top, spacing: 16) {
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack(spacing: 8) {
+                        Picker("Model", selection: $viewModel.selectedModelID) {
+                            ForEach(viewModel.models) { option in
+                                Text(option.displayName).tag(Optional(option.id))
+                            }
+                        }
+                        .frame(maxWidth: 320)
+                        if viewModel.isLoadingModels {
+                            ProgressView()
+                                .controlSize(.small)
+                        }
+                    }
+                    if let hint = modelPickerHint {
+                        Text(hint)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
                 }
-                .frame(maxWidth: 400)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                if viewModel.isStreaming {
-                    ProgressView()
-                        .controlSize(.small)
-                }
                 VStack(alignment: .leading, spacing: 6) {
                     HStack(alignment: .bottom, spacing: 8) {
                         VStack(alignment: .leading, spacing: 2) {
@@ -26,6 +35,10 @@ struct ChatView: View {
                             SecureField("Your company key", text: $viewModel.applicationKey)
                                 .textFieldStyle(.roundedBorder)
                                 .frame(width: 200)
+                                .onSubmit { Task { await viewModel.loadModels() } }
+                                .onChange(of: viewModel.applicationKey) {
+                                    viewModel.reloadModelsAfterKeyChange()
+                                }
                         }
                         VStack(alignment: .leading, spacing: 2) {
                             Text("End User Key")
@@ -43,6 +56,7 @@ struct ChatView: View {
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                 }
+                .frame(width: 416, alignment: .leading)
             }
             .padding()
 
@@ -87,8 +101,16 @@ struct ChatView: View {
             }
             .padding()
         }
-        .frame(minWidth: 620, minHeight: 480)
+        .frame(minWidth: 820, minHeight: 480)
         .task { await viewModel.loadModels() }
+    }
+
+    private var modelPickerHint: String? {
+        if viewModel.isLoadingModels { return nil }
+        guard viewModel.models.isEmpty else { return nil }
+        return viewModel.applicationKey.isEmpty
+            ? "Enter your Application Key to load models."
+            : "No models available for this key."
     }
 
     private func submit() {
