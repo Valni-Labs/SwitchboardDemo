@@ -14,7 +14,10 @@ final class ChatViewModel {
     var transcript: [TranscriptEntry] = []
     var draft = ""
     var isStreaming = false
+    var isLoadingModels = false
     var statusMessage: String?
+
+    private var modelLoadTask: Task<Void, Never>?
 
     init(modelCatalog: ModelCatalogProviding, chatService: ChatStreaming) {
         self.modelCatalog = modelCatalog
@@ -43,20 +46,36 @@ final class ChatViewModel {
             && !draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
+    func reloadModelsAfterKeyChange() {
+        modelLoadTask?.cancel()
+        modelLoadTask = Task { [weak self] in
+            try? await Task.sleep(for: .milliseconds(500))
+            if Task.isCancelled { return }
+            await self?.loadModels()
+        }
+    }
+
     func loadModels() async {
         guard let modelCatalog else { return }
-        guard !trimmedApplicationKey.isEmpty else {
-            statusMessage = "Enter your Application Key and press Return to load models."
+        let key = trimmedApplicationKey
+        guard !key.isEmpty else {
+            models = []
+            selectedModelID = nil
+            statusMessage = nil
             return
         }
+        isLoadingModels = true
+        defer { isLoadingModels = false }
         do {
-            let loaded = try await modelCatalog.loadModels(applicationKey: trimmedApplicationKey)
+            let loaded = try await modelCatalog.loadModels(applicationKey: key)
             models = loaded
             if selectedModelID == nil || !loaded.contains(where: { $0.id == selectedModelID }) {
                 selectedModelID = loaded.first?.id
             }
             statusMessage = nil
         } catch {
+            models = []
+            selectedModelID = nil
             statusMessage = error.localizedDescription
         }
     }

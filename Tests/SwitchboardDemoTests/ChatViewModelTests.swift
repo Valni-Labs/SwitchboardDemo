@@ -60,7 +60,17 @@ struct ChatViewModelTests {
         await viewModel.loadModels()
         #expect(viewModel.models.isEmpty)
         #expect(viewModel.selectedModelID == nil)
-        #expect(viewModel.statusMessage != nil)
+    }
+
+    @Test func loadModelsClearsModelsWhenKeyRemoved() async {
+        let viewModel = makeViewModel()
+        viewModel.applicationKey = "swb_test"
+        await viewModel.loadModels()
+        #expect(!viewModel.models.isEmpty)
+        viewModel.applicationKey = ""
+        await viewModel.loadModels()
+        #expect(viewModel.models.isEmpty)
+        #expect(viewModel.selectedModelID == nil)
     }
 
     @Test func loadModelsPopulatesAndSelectsFirst() async {
