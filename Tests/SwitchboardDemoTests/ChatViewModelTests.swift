@@ -10,6 +10,21 @@ struct FakeModelCatalog: ModelCatalogProviding {
     }
 }
 
+@MainActor
+final class KeyMutatingCatalog: ModelCatalogProviding {
+    let models: [ModelOption]
+    var onLoad: (() -> Void)?
+
+    init(models: [ModelOption]) {
+        self.models = models
+    }
+
+    func loadModels(applicationKey: String) async throws -> [ModelOption] {
+        onLoad?()
+        return models
+    }
+}
+
 struct FakeChatStream: ChatStreaming {
     let pieces: [String]
     var error: Error? = nil
@@ -57,6 +72,19 @@ struct ChatViewModelTests {
 
     @Test func loadModelsRequiresApplicationKey() async {
         let viewModel = makeViewModel()
+        await viewModel.loadModels()
+        #expect(viewModel.models.isEmpty)
+        #expect(viewModel.selectedModelID == nil)
+    }
+
+    @Test func loadModelsDropsResultsWhenKeyChangesDuringLoad() async {
+        let catalog = KeyMutatingCatalog(models: options)
+        let viewModel = ChatViewModel(
+            modelCatalog: catalog,
+            chatService: FakeChatStream(pieces: [])
+        )
+        viewModel.applicationKey = "swb_original"
+        catalog.onLoad = { viewModel.applicationKey = "swb_changed" }
         await viewModel.loadModels()
         #expect(viewModel.models.isEmpty)
         #expect(viewModel.selectedModelID == nil)

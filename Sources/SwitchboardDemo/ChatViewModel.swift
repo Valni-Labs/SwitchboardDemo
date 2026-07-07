@@ -68,12 +68,14 @@ final class ChatViewModel {
         defer { isLoadingModels = false }
         do {
             let loaded = try await modelCatalog.loadModels(applicationKey: key)
+            guard key == trimmedApplicationKey else { return }
             models = loaded
             if selectedModelID == nil || !loaded.contains(where: { $0.id == selectedModelID }) {
                 selectedModelID = loaded.first?.id
             }
             statusMessage = nil
         } catch {
+            guard key == trimmedApplicationKey else { return }
             models = []
             selectedModelID = nil
             statusMessage = error.localizedDescription
