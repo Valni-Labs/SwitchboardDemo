@@ -21,14 +21,7 @@ struct SwitchboardDemoApp: App {
         do {
             let configuration = try DemoConfiguration.fromEnvironment()
             let modelCatalog = try LinecardModelCatalog()
-            let chatService: ChatStreaming? = configuration.apiKey.map { apiKey in
-                SwitchboardChatService(
-                    apiKey: apiKey,
-                    baseURL: configuration.baseURL,
-                    endUserID: configuration.endUserID
-                )
-            }
-            return ChatViewModel(modelCatalog: modelCatalog, chatService: chatService)
+            return ChatViewModel(modelCatalog: modelCatalog, baseURL: configuration.baseURL)
         } catch {
             return ChatViewModel(setupError: error.localizedDescription)
         }

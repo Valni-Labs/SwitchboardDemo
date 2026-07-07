@@ -5,17 +5,43 @@ struct ChatView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            HStack {
+            HStack(alignment: .top) {
                 Picker("Model", selection: $viewModel.selectedModelID) {
                     ForEach(viewModel.models) { option in
                         Text(option.displayName).tag(Optional(option.id))
                     }
                 }
                 .frame(maxWidth: 400)
-                Spacer()
+                .frame(maxWidth: .infinity, alignment: .leading)
                 if viewModel.isStreaming {
                     ProgressView()
                         .controlSize(.small)
+                }
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack(alignment: .bottom, spacing: 8) {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Application Key")
+                                .font(.caption.bold())
+                                .foregroundStyle(.primary)
+                            SecureField("Your company key", text: $viewModel.applicationKey)
+                                .textFieldStyle(.roundedBorder)
+                                .frame(width: 200)
+                        }
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("End User Key")
+                                .font(.caption.bold())
+                                .foregroundStyle(.primary)
+                            TextField("User of your app key", text: $viewModel.endUserKey)
+                                .textFieldStyle(.roundedBorder)
+                                .frame(width: 200)
+                        }
+                    }
+                    Text("For demo only — see [platform.valni.ai](https://platform.valni.ai) for key management best practices.")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                    Text("Mint keys at valni.ai in platform/account.")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
                 }
             }
             .padding()
@@ -61,7 +87,7 @@ struct ChatView: View {
             }
             .padding()
         }
-        .frame(minWidth: 560, minHeight: 480)
+        .frame(minWidth: 620, minHeight: 480)
         .task { await viewModel.loadModels() }
     }
 

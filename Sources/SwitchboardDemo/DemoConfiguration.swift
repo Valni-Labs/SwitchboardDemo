@@ -2,9 +2,7 @@ import Foundation
 import Switchboard
 
 struct DemoConfiguration {
-    let apiKey: String?
     let baseURL: URL
-    let endUserID: String?
 
     enum ConfigurationError: LocalizedError {
         case invalidBaseURL(String)
@@ -27,11 +25,7 @@ struct DemoConfiguration {
         } else {
             baseURL = Client.defaultBaseURL
         }
-        return DemoConfiguration(
-            apiKey: nonEmpty(environment["SWITCHBOARD_API_KEY"]),
-            baseURL: baseURL,
-            endUserID: nonEmpty(environment["SWITCHBOARD_END_USER_ID"])
-        )
+        return DemoConfiguration(baseURL: baseURL)
     }
 
     private static func nonEmpty(_ value: String?) -> String? {

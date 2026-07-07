@@ -79,14 +79,16 @@ struct ChatViewModelTests {
         #expect(viewModel.statusMessage == "stream failed")
     }
 
-    @Test func missingChatServiceSurfacesStatusAndBlocksSend() {
+    @Test func emptyApiKeyBlocksSend() async {
         let viewModel = ChatViewModel(
             modelCatalog: FakeModelCatalog(models: options),
             chatService: nil
         )
+        await viewModel.loadModels()
         viewModel.draft = "Hi"
-        #expect(viewModel.statusMessage != nil)
         #expect(viewModel.canSend == false)
+        await viewModel.send()
+        #expect(viewModel.transcript.isEmpty)
     }
 
     @Test func setupErrorSurfacesMessage() {
@@ -109,29 +111,22 @@ struct ChatViewModelTests {
 }
 
 struct DemoConfigurationTests {
-    @Test func missingKeyIsNil() throws {
+    @Test func missingBaseURLUsesDefault() throws {
         let configuration = try DemoConfiguration.fromEnvironment([:])
-        #expect(configuration.apiKey == nil)
-        #expect(configuration.endUserID == nil)
+        #expect(configuration.baseURL.scheme == "https")
     }
 
-    @Test func emptyValuesNormalizeToNil() throws {
+    @Test func customBaseURLPassesThrough() throws {
         let configuration = try DemoConfiguration.fromEnvironment([
-            "SWITCHBOARD_API_KEY": "",
-            "SWITCHBOARD_END_USER_ID": "",
-        ])
-        #expect(configuration.apiKey == nil)
-        #expect(configuration.endUserID == nil)
-    }
-
-    @Test func valuesPassThrough() throws {
-        let configuration = try DemoConfiguration.fromEnvironment([
-            "SWITCHBOARD_API_KEY": "swb_test",
             "SWITCHBOARD_BASE_URL": "https://switchboard.example.com",
-            "SWITCHBOARD_END_USER_ID": "demo-user",
         ])
-        #expect(configuration.apiKey == "swb_test")
         #expect(configuration.baseURL.absoluteString == "https://switchboard.example.com")
-        #expect(configuration.endUserID == "demo-user")
+    }
+
+    @Test func emptyBaseURLUsesDefault() throws {
+        let configuration = try DemoConfiguration.fromEnvironment([
+            "SWITCHBOARD_BASE_URL": "",
+        ])
+        #expect(configuration.baseURL.scheme == "https")
     }
 }
