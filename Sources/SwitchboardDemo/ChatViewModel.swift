@@ -5,8 +5,11 @@ import Observation
 @MainActor
 final class ChatViewModel {
     private let modelCatalog: ModelCatalogProviding?
-    private let chatService: ChatStreaming?
+    private let injectedChatService: ChatStreaming?
+    private let baseURL: URL
 
+    var applicationKey = ""
+    var endUserKey = ""
     var models: [ModelOption] = []
     var selectedModelID: String?
     var transcript: [TranscriptEntry] = []
@@ -14,22 +17,29 @@ final class ChatViewModel {
     var isStreaming = false
     var statusMessage: String?
 
+    init(modelCatalog: ModelCatalogProviding, baseURL: URL) {
+        self.modelCatalog = modelCatalog
+        self.injectedChatService = nil
+        self.baseURL = baseURL
+    }
+
     init(modelCatalog: ModelCatalogProviding, chatService: ChatStreaming?) {
         self.modelCatalog = modelCatalog
-        self.chatService = chatService
-        if chatService == nil {
-            statusMessage = "SWITCHBOARD_API_KEY is not set. Relaunch with SWITCHBOARD_API_KEY=swb_... to chat."
-        }
+        self.injectedChatService = chatService
+        self.baseURL = URL(string: "https://switchboard.valni.app")!
     }
 
     init(setupError: String) {
         modelCatalog = nil
-        chatService = nil
+        injectedChatService = nil
+        baseURL = URL(string: "https://switchboard.valni.app")!
         statusMessage = setupError
     }
 
     var canSend: Bool {
-        chatService != nil
+        let hasCredential = injectedChatService != nil
+            || !applicationKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        return hasCredential
             && !isStreaming
             && selectedModelID != nil
             && !draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
@@ -48,7 +58,22 @@ final class ChatViewModel {
     }
 
     func send() async {
-        guard canSend, let chatService, let selectedModelID else { return }
+        guard canSend, let selectedModelID else { return }
+
+        let service: ChatStreaming
+        if let injected = injectedChatService {
+            service = injected
+        } else {
+            let trimmedKey = applicationKey.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !trimmedKey.isEmpty else { return }
+            let trimmedEndUserKey = endUserKey.trimmingCharacters(in: .whitespacesAndNewlines)
+            service = SwitchboardChatService(
+                apiKey: trimmedKey,
+                baseURL: baseURL,
+                endUserID: trimmedEndUserKey.isEmpty ? nil : trimmedEndUserKey
+            )
+        }
+
         let text = draft.trimmingCharacters(in: .whitespacesAndNewlines)
         draft = ""
         statusMessage = nil
@@ -58,7 +83,7 @@ final class ChatViewModel {
         isStreaming = true
         defer { isStreaming = false }
         do {
-            for try await piece in chatService.streamReply(modelID: selectedModelID, history: history) {
+            for try await piece in service.streamReply(modelID: selectedModelID, history: history) {
                 transcript[transcript.count - 1].text += piece
             }
         } catch {

@@ -1,0 +1,377 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		D300000000000000000001C1 /* ChatStreaming.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001B1 /* ChatStreaming.swift */; };
+		D300000000000000000001C2 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001B2 /* ChatView.swift */; };
+		D300000000000000000001C3 /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001B3 /* ChatViewModel.swift */; };
+		D300000000000000000001C4 /* DemoConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001B4 /* DemoConfiguration.swift */; };
+		D300000000000000000001C5 /* LinecardModelCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001B5 /* LinecardModelCatalog.swift */; };
+		D300000000000000000001C6 /* ModelCatalogProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001B6 /* ModelCatalogProviding.swift */; };
+		D300000000000000000001C7 /* ModelOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001B7 /* ModelOption.swift */; };
+		D300000000000000000001C8 /* SwitchboardChatService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001B8 /* SwitchboardChatService.swift */; };
+		D300000000000000000001C9 /* SwitchboardDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001B9 /* SwitchboardDemoApp.swift */; };
+		D300000000000000000001CA /* TranscriptEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001BA /* TranscriptEntry.swift */; };
+		D300000000000000000001CB /* TranscriptEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001BB /* TranscriptEntryView.swift */; };
+		D300000000000000000001D5 /* Switchboard in Frameworks */ = {isa = PBXBuildFile; productRef = D300000000000000000001D3 /* Switchboard */; };
+		D300000000000000000001D6 /* Linecard in Frameworks */ = {isa = PBXBuildFile; productRef = D300000000000000000001D4 /* Linecard */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		D300000000000000000001B1 /* ChatStreaming.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatStreaming.swift; sourceTree = "<group>"; };
+		D300000000000000000001B2 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
+		D300000000000000000001B3 /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
+		D300000000000000000001B4 /* DemoConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoConfiguration.swift; sourceTree = "<group>"; };
+		D300000000000000000001B5 /* LinecardModelCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinecardModelCatalog.swift; sourceTree = "<group>"; };
+		D300000000000000000001B6 /* ModelCatalogProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelCatalogProviding.swift; sourceTree = "<group>"; };
+		D300000000000000000001B7 /* ModelOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelOption.swift; sourceTree = "<group>"; };
+		D300000000000000000001B8 /* SwitchboardChatService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchboardChatService.swift; sourceTree = "<group>"; };
+		D300000000000000000001B9 /* SwitchboardDemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchboardDemoApp.swift; sourceTree = "<group>"; };
+		D300000000000000000001BA /* TranscriptEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptEntry.swift; sourceTree = "<group>"; };
+		D300000000000000000001BB /* TranscriptEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptEntryView.swift; sourceTree = "<group>"; };
+		D300000000000000000001E1 /* SwitchboardDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwitchboardDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D300000000000000000001A7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D300000000000000000001D5 /* Switchboard in Frameworks */,
+				D300000000000000000001D6 /* Linecard in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		D300000000000000000001A2 /* SwitchboardDemo */ = {
+			isa = PBXGroup;
+			children = (
+				D300000000000000000001A4 /* Sources */,
+				D300000000000000000001E2 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D300000000000000000001A4 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				D300000000000000000001B1 /* ChatStreaming.swift */,
+				D300000000000000000001B2 /* ChatView.swift */,
+				D300000000000000000001B3 /* ChatViewModel.swift */,
+				D300000000000000000001B4 /* DemoConfiguration.swift */,
+				D300000000000000000001B5 /* LinecardModelCatalog.swift */,
+				D300000000000000000001B6 /* ModelCatalogProviding.swift */,
+				D300000000000000000001B7 /* ModelOption.swift */,
+				D300000000000000000001B8 /* SwitchboardChatService.swift */,
+				D300000000000000000001B9 /* SwitchboardDemoApp.swift */,
+				D300000000000000000001BA /* TranscriptEntry.swift */,
+				D300000000000000000001BB /* TranscriptEntryView.swift */,
+			);
+			path = Sources/SwitchboardDemo;
+			sourceTree = "<group>";
+		};
+		D300000000000000000001E2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D300000000000000000001E1 /* SwitchboardDemo.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D300000000000000000001A5 /* SwitchboardDemo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D300000000000000000001A9 /* Build configuration list for PBXNativeTarget "SwitchboardDemo" */;
+			buildPhases = (
+				D300000000000000000001A6 /* Sources */,
+				D300000000000000000001A7 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SwitchboardDemo;
+			packageProductDependencies = (
+				D300000000000000000001D3 /* Switchboard */,
+				D300000000000000000001D4 /* Linecard */,
+			);
+			productName = SwitchboardDemo;
+			productReference = D300000000000000000001E1 /* SwitchboardDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D300000000000000000001A1 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
+				ORGANIZATIONNAME = "Benovi Labs";
+				TargetAttributes = {
+					D300000000000000000001A5 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+				};
+			};
+			buildConfigurationList = D300000000000000000001A8 /* Build configuration list for PBXProject "SwitchboardDemo" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = D300000000000000000001A2;
+			packageReferences = (
+				D300000000000000000001D1 /* XCRemoteSwiftPackageReference "switchboard-swift" */,
+				D300000000000000000001D2 /* XCRemoteSwiftPackageReference "linecard-swift" */,
+			);
+			productRefGroup = D300000000000000000001E2 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D300000000000000000001A5 /* SwitchboardDemo */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D300000000000000000001A6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D300000000000000000001C1 /* ChatStreaming.swift in Sources */,
+				D300000000000000000001C2 /* ChatView.swift in Sources */,
+				D300000000000000000001C3 /* ChatViewModel.swift in Sources */,
+				D300000000000000000001C4 /* DemoConfiguration.swift in Sources */,
+				D300000000000000000001C5 /* LinecardModelCatalog.swift in Sources */,
+				D300000000000000000001C6 /* ModelCatalogProviding.swift in Sources */,
+				D300000000000000000001C7 /* ModelOption.swift in Sources */,
+				D300000000000000000001C8 /* SwitchboardChatService.swift in Sources */,
+				D300000000000000000001C9 /* SwitchboardDemoApp.swift in Sources */,
+				D300000000000000000001CA /* TranscriptEntry.swift in Sources */,
+				D300000000000000000001CB /* TranscriptEntryView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		D300000000000000000001AA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_CYCLE = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		D300000000000000000001AB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_CYCLE = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		D300000000000000000001AC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.benovi-labs.switchboard-demo";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		D300000000000000000001AD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.benovi-labs.switchboard-demo";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		D300000000000000000001A8 /* Build configuration list for PBXProject "SwitchboardDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D300000000000000000001AA /* Debug */,
+				D300000000000000000001AB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D300000000000000000001A9 /* Build configuration list for PBXNativeTarget "SwitchboardDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D300000000000000000001AC /* Debug */,
+				D300000000000000000001AD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		D300000000000000000001D1 /* XCRemoteSwiftPackageReference "switchboard-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Benovi-Labs/switchboard-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = "0.1.0";
+			};
+		};
+		D300000000000000000001D2 /* XCRemoteSwiftPackageReference "linecard-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Benovi-Labs/linecard-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = "0.1.0";
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		D300000000000000000001D3 /* Switchboard */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D300000000000000000001D1 /* XCRemoteSwiftPackageReference "switchboard-swift" */;
+			productName = Switchboard;
+		};
+		D300000000000000000001D4 /* Linecard */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D300000000000000000001D2 /* XCRemoteSwiftPackageReference "linecard-swift" */;
+			productName = Linecard;
+		};
+/* End XCSwiftPackageProductDependency section */
+
+	};
+	rootObject = D300000000000000000001A1 /* Project object */;
+}
