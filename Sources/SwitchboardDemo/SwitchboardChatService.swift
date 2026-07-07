@@ -14,7 +14,7 @@ final class SwitchboardChatService: ChatStreaming, Sendable {
         var errorDescription: String? {
             switch self {
             case .unsupportedWireFormat(let wireFormat):
-                "This demo only speaks \(WireFormat.openAICompatible) and \(WireFormat.anthropicMessages), but the selected model uses '\(wireFormat)'."
+                "This demo only speaks \(WireFormat.openAICompatible), \(WireFormat.anthropicMessages), and \(WireFormat.openAIResponses), but the selected model uses '\(wireFormat)'."
             }
         }
     }
@@ -81,6 +81,14 @@ final class SwitchboardChatService: ChatStreaming, Sendable {
             )
         case WireFormat.openAICompatible:
             return SwitchboardProvider(
+                modelID: model.id,
+                apiKey: applicationKey,
+                endUserID: endUserKey,
+                baseURL: baseURL,
+                contextWindow: model.contextWindow
+            )
+        case WireFormat.openAIResponses:
+            return OpenAIResponsesAdapter(
                 modelID: model.id,
                 apiKey: applicationKey,
                 endUserID: endUserKey,
