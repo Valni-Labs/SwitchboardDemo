@@ -3,3 +3,5 @@
 .DS_Store
 .envrc
 xcuserdata/
+Package.resolved
+**/xcshareddata/swiftpm/Package.resolved

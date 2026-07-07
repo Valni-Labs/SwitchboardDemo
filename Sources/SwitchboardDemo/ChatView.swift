@@ -26,6 +26,7 @@ struct ChatView: View {
                             SecureField("Your company key", text: $viewModel.applicationKey)
                                 .textFieldStyle(.roundedBorder)
                                 .frame(width: 200)
+                                .onSubmit { Task { await viewModel.loadModels() } }
                         }
                         VStack(alignment: .leading, spacing: 2) {
                             Text("End User Key")

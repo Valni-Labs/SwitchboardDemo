@@ -11,7 +11,7 @@
 		D300000000000000000001C2 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001B2 /* ChatView.swift */; };
 		D300000000000000000001C3 /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001B3 /* ChatViewModel.swift */; };
 		D300000000000000000001C4 /* DemoConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001B4 /* DemoConfiguration.swift */; };
-		D300000000000000000001C5 /* LinecardModelCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001B5 /* LinecardModelCatalog.swift */; };
+		D300000000000000000001C5 /* SwitchboardModelCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001B5 /* SwitchboardModelCatalog.swift */; };
 		D300000000000000000001C6 /* ModelCatalogProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001B6 /* ModelCatalogProviding.swift */; };
 		D300000000000000000001C7 /* ModelOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001B7 /* ModelOption.swift */; };
 		D300000000000000000001C8 /* SwitchboardChatService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001B8 /* SwitchboardChatService.swift */; };
@@ -19,7 +19,6 @@
 		D300000000000000000001CA /* TranscriptEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001BA /* TranscriptEntry.swift */; };
 		D300000000000000000001CB /* TranscriptEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001BB /* TranscriptEntryView.swift */; };
 		D300000000000000000001D5 /* Switchboard in Frameworks */ = {isa = PBXBuildFile; productRef = D300000000000000000001D3 /* Switchboard */; };
-		D300000000000000000001D6 /* Linecard in Frameworks */ = {isa = PBXBuildFile; productRef = D300000000000000000001D4 /* Linecard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,7 +26,7 @@
 		D300000000000000000001B2 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		D300000000000000000001B3 /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
 		D300000000000000000001B4 /* DemoConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoConfiguration.swift; sourceTree = "<group>"; };
-		D300000000000000000001B5 /* LinecardModelCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinecardModelCatalog.swift; sourceTree = "<group>"; };
+		D300000000000000000001B5 /* SwitchboardModelCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchboardModelCatalog.swift; sourceTree = "<group>"; };
 		D300000000000000000001B6 /* ModelCatalogProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelCatalogProviding.swift; sourceTree = "<group>"; };
 		D300000000000000000001B7 /* ModelOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelOption.swift; sourceTree = "<group>"; };
 		D300000000000000000001B8 /* SwitchboardChatService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchboardChatService.swift; sourceTree = "<group>"; };
@@ -43,7 +42,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				D300000000000000000001D5 /* Switchboard in Frameworks */,
-				D300000000000000000001D6 /* Linecard in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,7 +63,7 @@
 				D300000000000000000001B2 /* ChatView.swift */,
 				D300000000000000000001B3 /* ChatViewModel.swift */,
 				D300000000000000000001B4 /* DemoConfiguration.swift */,
-				D300000000000000000001B5 /* LinecardModelCatalog.swift */,
+				D300000000000000000001B5 /* SwitchboardModelCatalog.swift */,
 				D300000000000000000001B6 /* ModelCatalogProviding.swift */,
 				D300000000000000000001B7 /* ModelOption.swift */,
 				D300000000000000000001B8 /* SwitchboardChatService.swift */,
@@ -101,7 +99,6 @@
 			name = SwitchboardDemo;
 			packageProductDependencies = (
 				D300000000000000000001D3 /* Switchboard */,
-				D300000000000000000001D4 /* Linecard */,
 			);
 			productName = SwitchboardDemo;
 			productReference = D300000000000000000001E1 /* SwitchboardDemo.app */;
@@ -134,7 +131,6 @@
 			mainGroup = D300000000000000000001A2;
 			packageReferences = (
 				D300000000000000000001D1 /* XCRemoteSwiftPackageReference "switchboard-swift" */,
-				D300000000000000000001D2 /* XCRemoteSwiftPackageReference "linecard-swift" */,
 			);
 			productRefGroup = D300000000000000000001E2 /* Products */;
 			projectDirPath = "";
@@ -154,7 +150,7 @@
 				D300000000000000000001C2 /* ChatView.swift in Sources */,
 				D300000000000000000001C3 /* ChatViewModel.swift in Sources */,
 				D300000000000000000001C4 /* DemoConfiguration.swift in Sources */,
-				D300000000000000000001C5 /* LinecardModelCatalog.swift in Sources */,
+				D300000000000000000001C5 /* SwitchboardModelCatalog.swift in Sources */,
 				D300000000000000000001C6 /* ModelCatalogProviding.swift in Sources */,
 				D300000000000000000001C7 /* ModelOption.swift in Sources */,
 				D300000000000000000001C8 /* SwitchboardChatService.swift in Sources */,
@@ -346,15 +342,7 @@
 			repositoryURL = "https://github.com/Benovi-Labs/switchboard-swift";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = "0.1.0";
-			};
-		};
-		D300000000000000000001D2 /* XCRemoteSwiftPackageReference "linecard-swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Benovi-Labs/linecard-swift";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = "0.1.0";
+				minimumVersion = "0.2.0";
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -364,11 +352,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = D300000000000000000001D1 /* XCRemoteSwiftPackageReference "switchboard-swift" */;
 			productName = Switchboard;
-		};
-		D300000000000000000001D4 /* Linecard */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = D300000000000000000001D2 /* XCRemoteSwiftPackageReference "linecard-swift" */;
-			productName = Linecard;
 		};
 /* End XCSwiftPackageProductDependency section */
 

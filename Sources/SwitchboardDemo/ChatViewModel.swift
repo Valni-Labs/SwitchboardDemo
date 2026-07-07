@@ -5,8 +5,7 @@ import Observation
 @MainActor
 final class ChatViewModel {
     private let modelCatalog: ModelCatalogProviding?
-    private let injectedChatService: ChatStreaming?
-    private let baseURL: URL
+    private let chatService: ChatStreaming?
 
     var applicationKey = ""
     var endUserKey = ""
@@ -17,63 +16,54 @@ final class ChatViewModel {
     var isStreaming = false
     var statusMessage: String?
 
-    init(modelCatalog: ModelCatalogProviding, baseURL: URL) {
+    init(modelCatalog: ModelCatalogProviding, chatService: ChatStreaming) {
         self.modelCatalog = modelCatalog
-        self.injectedChatService = nil
-        self.baseURL = baseURL
-    }
-
-    init(modelCatalog: ModelCatalogProviding, chatService: ChatStreaming?) {
-        self.modelCatalog = modelCatalog
-        self.injectedChatService = chatService
-        self.baseURL = URL(string: "https://switchboard.valni.app")!
+        self.chatService = chatService
     }
 
     init(setupError: String) {
         modelCatalog = nil
-        injectedChatService = nil
-        baseURL = URL(string: "https://switchboard.valni.app")!
+        chatService = nil
         statusMessage = setupError
     }
 
+    private var trimmedApplicationKey: String {
+        applicationKey.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    var selectedModel: ModelOption? {
+        models.first { $0.id == selectedModelID }
+    }
+
     var canSend: Bool {
-        let hasCredential = injectedChatService != nil
-            || !applicationKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-        return hasCredential
+        chatService != nil
+            && !trimmedApplicationKey.isEmpty
             && !isStreaming
-            && selectedModelID != nil
+            && selectedModel != nil
             && !draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
     func loadModels() async {
         guard let modelCatalog else { return }
+        guard !trimmedApplicationKey.isEmpty else {
+            statusMessage = "Enter your Application Key and press Return to load models."
+            return
+        }
         do {
-            models = try await modelCatalog.loadModels()
-            if selectedModelID == nil {
-                selectedModelID = models.first?.id
+            let loaded = try await modelCatalog.loadModels(applicationKey: trimmedApplicationKey)
+            models = loaded
+            if selectedModelID == nil || !loaded.contains(where: { $0.id == selectedModelID }) {
+                selectedModelID = loaded.first?.id
             }
+            statusMessage = nil
         } catch {
             statusMessage = error.localizedDescription
         }
     }
 
     func send() async {
-        guard canSend, let selectedModelID else { return }
-
-        let service: ChatStreaming
-        if let injected = injectedChatService {
-            service = injected
-        } else {
-            let trimmedKey = applicationKey.trimmingCharacters(in: .whitespacesAndNewlines)
-            guard !trimmedKey.isEmpty else { return }
-            let trimmedEndUserKey = endUserKey.trimmingCharacters(in: .whitespacesAndNewlines)
-            service = SwitchboardChatService(
-                apiKey: trimmedKey,
-                baseURL: baseURL,
-                endUserID: trimmedEndUserKey.isEmpty ? nil : trimmedEndUserKey
-            )
-        }
-
+        guard canSend, let chatService, let model = selectedModel else { return }
+        let trimmedEndUserKey = endUserKey.trimmingCharacters(in: .whitespacesAndNewlines)
         let text = draft.trimmingCharacters(in: .whitespacesAndNewlines)
         draft = ""
         statusMessage = nil
@@ -83,7 +73,13 @@ final class ChatViewModel {
         isStreaming = true
         defer { isStreaming = false }
         do {
-            for try await piece in service.streamReply(modelID: selectedModelID, history: history) {
+            let stream = chatService.streamReply(
+                model: model,
+                applicationKey: trimmedApplicationKey,
+                endUserKey: trimmedEndUserKey.isEmpty ? nil : trimmedEndUserKey,
+                history: history
+            )
+            for try await piece in stream {
                 transcript[transcript.count - 1].text += piece
             }
         } catch {

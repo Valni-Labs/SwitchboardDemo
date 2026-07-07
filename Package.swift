@@ -5,15 +5,13 @@ let package = Package(
     name: "SwitchboardDemo",
     platforms: [.macOS(.v14)],
     dependencies: [
-        .package(url: "https://github.com/Benovi-Labs/switchboard-swift", from: "0.1.0"),
-        .package(url: "https://github.com/Benovi-Labs/linecard-swift", from: "0.1.0"),
+        .package(url: "https://github.com/Benovi-Labs/switchboard-swift", from: "0.2.0"),
     ],
     targets: [
         .executableTarget(
             name: "SwitchboardDemo",
             dependencies: [
                 .product(name: "Switchboard", package: "switchboard-swift"),
-                .product(name: "Linecard", package: "linecard-swift"),
             ]
         ),
         .testTarget(
