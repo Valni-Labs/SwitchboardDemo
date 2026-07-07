@@ -1,0 +1,15 @@
+{
+  "originHash" : "d4ae2f700ff332ed38602ed7dd75782470bd822d963ac975dea12ec7bf9949fb",
+  "pins" : [
+    {
+      "identity" : "switchboard-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Benovi-Labs/switchboard-swift",
+      "state" : {
+        "revision" : "d9492fe68a8c13d858526b8ecd22c276d8ab51e7",
+        "version" : "0.2.0"
+      }
+    }
+  ],
+  "version" : 3
+}
