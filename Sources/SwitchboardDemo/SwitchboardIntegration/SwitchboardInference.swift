@@ -1,7 +1,7 @@
 import Foundation
 import Switchboard
 
-final class SwitchboardChatService: ChatStreaming, Sendable {
+final class SwitchboardInference: ChatStreaming, Sendable {
     private let baseURL: URL
 
     init(baseURL: URL) {
