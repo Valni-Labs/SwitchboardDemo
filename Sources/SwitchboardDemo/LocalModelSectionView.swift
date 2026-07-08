@@ -4,11 +4,29 @@ import SwitchboardLocal
 struct LocalModelSectionView: View {
     @Bindable var viewModel: ChatViewModel
     @State private var repositoryInput = ""
+    @State private var isLocalInfoPresented = false
 
     var body: some View {
         if let store = viewModel.localModelStore {
             VStack(alignment: .leading, spacing: 6) {
-                Text("Local models")
+                HStack(spacing: 6) {
+                    Text("Local models")
+                        .font(.title3.bold())
+                    Button {
+                        isLocalInfoPresented.toggle()
+                    } label: {
+                        Image(systemName: "info.circle")
+                            .foregroundStyle(.secondary)
+                    }
+                    .buttonStyle(.plain)
+                    .popover(isPresented: $isLocalInfoPresented, arrowEdge: .bottom) {
+                        Text("Local models run entirely on this Mac. No key, and no network once downloaded.\n\nModels must be in MLX format. The mlx-community organization on Hugging Face publishes ready-converted checkpoints, and 4-bit quantized builds are the right default. Enter a repository as organization/model or paste its page URL, then press Load to download once; after that the model loads from disk and appears in the model picker.\n\nThe model must fit in free memory: a 1B model wants roughly 1 GB, a 7B closer to 4 GB. Requires Apple Silicon.")
+                            .font(.callout)
+                            .frame(width: 360, alignment: .leading)
+                            .padding()
+                    }
+                }
+                Text("Add local model")
                     .font(.caption.bold())
                 HStack(spacing: 8) {
                     TextField("huggingface.co/organization/model", text: $repositoryInput)
@@ -18,15 +36,16 @@ struct LocalModelSectionView: View {
                     Button("Load", action: load)
                         .disabled(LocalModelStore.parseRepositoryID(repositoryInput) == nil)
                 }
-                HStack(spacing: 6) {
+                Menu("Suggested local models") {
                     ForEach(LocalModelStore.suggestions) { suggestion in
                         Button("\(suggestion.displayName) · \(suggestion.approximateSize)") {
-                            viewModel.addLocalModel(suggestion.repositoryID)
+                            repositoryInput = suggestion.repositoryID
                         }
-                        .font(.caption)
                         .disabled(store.model(for: suggestion.repositoryID) != nil)
                     }
                 }
+                .font(.caption)
+                .fixedSize()
                 ForEach(store.models) { localModel in
                     LocalModelRowView(localModel: localModel) {
                         viewModel.removeLocalModel(localModel)
@@ -75,6 +94,7 @@ struct LocalModelRowView: View {
         switch localModel.state {
         case .notDownloaded:
             Text("Not downloaded").font(.caption).foregroundStyle(.secondary)
+            Button("Download") { localModel.download() }.font(.caption)
         case .downloading(let progress, _, _):
             ProgressView(value: progress)
                 .frame(width: 120)

@@ -2,65 +2,35 @@ import SwiftUI
 
 struct ChatView: View {
     @Bindable var viewModel: ChatViewModel
+    @State private var isConfigurationExpanded = true
+    @State private var isCloudInfoPresented = false
 
     var body: some View {
         VStack(spacing: 0) {
-            HStack(alignment: .top, spacing: 16) {
-                VStack(alignment: .leading, spacing: 4) {
-                    HStack(spacing: 8) {
-                        Picker("Model", selection: $viewModel.selectedModelID) {
-                            ForEach(viewModel.models) { option in
-                                Text(option.displayName).tag(Optional(option.id))
-                            }
-                        }
-                        .frame(maxWidth: 320)
-                        if viewModel.isLoadingModels {
-                            ProgressView()
-                                .controlSize(.small)
-                        }
+            HStack {
+                Button {
+                    withAnimation(.easeInOut(duration: 0.15)) {
+                        isConfigurationExpanded.toggle()
                     }
-                    if let hint = modelPickerHint {
-                        Text(hint)
-                            .font(.caption)
+                } label: {
+                    HStack(spacing: 4) {
+                        Text("Configure Switchboard")
+                            .font(.headline)
+                        Image(systemName: isConfigurationExpanded ? "chevron.down" : "chevron.right")
+                            .font(.caption.bold())
                             .foregroundStyle(.secondary)
                     }
-                    LocalModelSectionView(viewModel: viewModel)
-                        .padding(.top, 8)
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                VStack(alignment: .leading, spacing: 6) {
-                    HStack(alignment: .bottom, spacing: 8) {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("Application Key")
-                                .font(.caption.bold())
-                                .foregroundStyle(.primary)
-                            SecureField("Your company key", text: $viewModel.applicationKey)
-                                .textFieldStyle(.roundedBorder)
-                                .frame(width: 200)
-                                .onSubmit { Task { await viewModel.loadModels() } }
-                                .onChange(of: viewModel.applicationKey) {
-                                    viewModel.reloadModelsAfterKeyChange()
-                                }
-                        }
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("End User Key")
-                                .font(.caption.bold())
-                                .foregroundStyle(.primary)
-                            TextField("User of your app key", text: $viewModel.endUserKey)
-                                .textFieldStyle(.roundedBorder)
-                                .frame(width: 200)
-                        }
-                    }
-                    Text("For demo only — see [platform.valni.ai](https://platform.valni.ai) for key management best practices.")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                    Text("Mint keys at valni.ai in platform/account.")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                }
-                .frame(width: 416, alignment: .leading)
+                .buttonStyle(.plain)
+                Spacer()
             }
-            .padding()
+            .padding(.horizontal, 12)
+            .padding(.top, 10)
+            .padding(.bottom, isConfigurationExpanded ? 0 : 10)
+
+            if isConfigurationExpanded {
+                configurationPanels
+            }
 
             Divider()
 
@@ -93,26 +63,117 @@ struct ChatView: View {
 
             Divider()
 
-            HStack(spacing: 12) {
+            HStack(spacing: 0) {
+                HStack(spacing: 12) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Model picker")
+                            .font(.caption.bold())
+                        if viewModel.models.isEmpty {
+                            Picker("Model", selection: $viewModel.selectedModelID) {
+                                Text(viewModel.isLoadingModels ? "Loading models…" : "Configure needed").tag(String?.none)
+                            }
+                            .labelsHidden()
+                            .fixedSize()
+                            .disabled(true)
+                            .accessibilityLabel("Model picker")
+                        } else {
+                            Picker("Model", selection: $viewModel.selectedModelID) {
+                                ForEach(viewModel.models) { option in
+                                    Text(option.displayName).tag(Optional(option.id))
+                                }
+                            }
+                            .labelsHidden()
+                            .fixedSize()
+                            .accessibilityLabel("Model picker")
+                        }
+                        Text("Enter keys or download a model.")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                    }
+                    .fixedSize()
+                    if viewModel.isLoadingModels {
+                        ProgressView()
+                            .controlSize(.small)
+                    }
+                }
+                .padding()
+
+                Divider()
+
                 TextField("Message", text: $viewModel.draft)
                     .textFieldStyle(.plain)
                     .onSubmit(submit)
+                    .padding()
+
                 Button("Send", action: submit)
                     .keyboardShortcut(.defaultAction)
                     .disabled(!viewModel.canSend)
+                    .padding(.trailing)
             }
-            .padding()
+            .frame(height: Self.inputBarHeight)
         }
         .frame(minWidth: 820, minHeight: 480)
         .task { await viewModel.loadModels() }
     }
 
-    private var modelPickerHint: String? {
-        if viewModel.isLoadingModels { return nil }
-        guard viewModel.models.isEmpty else { return nil }
-        return viewModel.applicationKey.isEmpty
-            ? "Enter your Application Key for cloud models, or load a local model below."
-            : "No models available for this key."
+    private static let inputBarHeight: CGFloat = 84
+
+    private var configurationPanels: some View {
+        HStack(alignment: .top, spacing: 12) {
+            GroupBox {
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(spacing: 6) {
+                        Text("Cloud models")
+                            .font(.title3.bold())
+                        Button {
+                            isCloudInfoPresented.toggle()
+                        } label: {
+                            Image(systemName: "info.circle")
+                                .foregroundStyle(.secondary)
+                        }
+                        .buttonStyle(.plain)
+                        .popover(isPresented: $isCloudInfoPresented, arrowEdge: .bottom) {
+                            Text("This key entry is for demo purposes only. In a real app, keys live in your backend's environment; see key management best practices in the docs.\n\nApplication Key: your company's Switchboard credential. It authenticates every request and meters usage and spend to your account. Minted in the platform portal and shown once.\n\nEnd User Key: attributes the request to an end user registered under your Application Key in the platform portal, so usage reports break down per user. The demo lets you send without one, but the API rejects requests it cannot attribute. It never carries funds; balances stay at the company level.")
+                                .font(.callout)
+                                .frame(width: 360, alignment: .leading)
+                                .padding()
+                        }
+                    }
+                    HStack(alignment: .bottom, spacing: 8) {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Application Key")
+                                .font(.caption.bold())
+                                .foregroundStyle(.primary)
+                            SecureField("Your company key", text: $viewModel.applicationKey)
+                                .textFieldStyle(.roundedBorder)
+                                .frame(width: 200)
+                                .onSubmit { Task { await viewModel.loadModels() } }
+                                .onChange(of: viewModel.applicationKey) {
+                                    viewModel.reloadModelsAfterKeyChange()
+                                }
+                        }
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("End User Key")
+                                .font(.caption.bold())
+                                .foregroundStyle(.primary)
+                            TextField("User of your app key", text: $viewModel.endUserKey)
+                                .textFieldStyle(.roundedBorder)
+                                .frame(width: 200)
+                        }
+                    }
+                }
+                .padding(8)
+                .frame(width: 432, alignment: .topLeading)
+                .frame(maxHeight: .infinity, alignment: .topLeading)
+            }
+            GroupBox {
+                LocalModelSectionView(viewModel: viewModel)
+                    .padding(8)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            }
+        }
+        .fixedSize(horizontal: false, vertical: true)
+        .padding(12)
     }
 
     private func submit() {
