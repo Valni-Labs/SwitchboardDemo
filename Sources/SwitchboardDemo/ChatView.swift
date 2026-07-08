@@ -78,8 +78,12 @@ struct ChatView: View {
                     Text("Model picker")
                         .font(.caption.bold())
                     if viewModel.models.isEmpty {
-                        Text("Configure needed")
-                            .foregroundStyle(.secondary)
+                        Picker("Model", selection: $viewModel.selectedModelID) {
+                            Text("Configure needed").tag(String?.none)
+                        }
+                        .labelsHidden()
+                        .fixedSize()
+                        .disabled(true)
                     } else {
                         Picker("Model", selection: $viewModel.selectedModelID) {
                             ForEach(viewModel.models) { option in
@@ -98,6 +102,8 @@ struct ChatView: View {
                     ProgressView()
                         .controlSize(.small)
                 }
+                Divider()
+                    .frame(height: 44)
                 TextField("Message", text: $viewModel.draft)
                     .textFieldStyle(.plain)
                     .onSubmit(submit)
