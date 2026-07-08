@@ -40,10 +40,14 @@ final class ChatViewModel {
 
     var canSend: Bool {
         chatService != nil
-            && !trimmedApplicationKey.isEmpty
+            && (isSelectedModelOnDevice || !trimmedApplicationKey.isEmpty)
             && !isStreaming
             && selectedModel != nil
             && !draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    private var isSelectedModelOnDevice: Bool {
+        selectedModel?.wireFormat == LocalModelSupport.wireFormat
     }
 
     func reloadModelsAfterKeyChange() {
@@ -58,12 +62,6 @@ final class ChatViewModel {
     func loadModels() async {
         guard let modelCatalog else { return }
         let key = trimmedApplicationKey
-        guard !key.isEmpty else {
-            models = []
-            selectedModelID = nil
-            statusMessage = nil
-            return
-        }
         isLoadingModels = true
         defer { isLoadingModels = false }
         do {
@@ -76,9 +74,13 @@ final class ChatViewModel {
             statusMessage = nil
         } catch {
             guard key == trimmedApplicationKey else { return }
-            models = []
-            selectedModelID = nil
             statusMessage = error.localizedDescription
+            let keylessModels = (try? await modelCatalog.loadModels(applicationKey: "")) ?? []
+            guard key == trimmedApplicationKey else { return }
+            models = keylessModels
+            if selectedModelID == nil || !keylessModels.contains(where: { $0.id == selectedModelID }) {
+                selectedModelID = keylessModels.first?.id
+            }
         }
     }
 
