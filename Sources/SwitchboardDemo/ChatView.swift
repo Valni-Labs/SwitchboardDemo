@@ -70,11 +70,12 @@ struct ChatView: View {
                             .font(.caption.bold())
                         if viewModel.models.isEmpty {
                             Picker("Model", selection: $viewModel.selectedModelID) {
-                                Text("Configure needed").tag(String?.none)
+                                Text(viewModel.isLoadingModels ? "Loading models…" : "Configure needed").tag(String?.none)
                             }
                             .labelsHidden()
                             .fixedSize()
                             .disabled(true)
+                            .accessibilityLabel("Model picker")
                         } else {
                             Picker("Model", selection: $viewModel.selectedModelID) {
                                 ForEach(viewModel.models) { option in
@@ -83,6 +84,7 @@ struct ChatView: View {
                             }
                             .labelsHidden()
                             .fixedSize()
+                            .accessibilityLabel("Model picker")
                         }
                         Text("Enter keys or download a model.")
                             .font(.caption2)
