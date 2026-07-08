@@ -121,6 +121,9 @@ final class LocalModelStore {
         if text.lowercased().hasPrefix("huggingface.co/") {
             text = String(text.dropFirst("huggingface.co/".count))
         }
+        if let suffixStart = text.firstIndex(where: { $0 == "?" || $0 == "#" }) {
+            text = String(text[..<suffixStart])
+        }
         text = text.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
         let components = text.split(separator: "/")
         guard components.count == 2, !text.contains(" ") else { return nil }

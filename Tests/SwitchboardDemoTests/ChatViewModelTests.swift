@@ -60,17 +60,22 @@ struct FailingCatalog: ModelCatalogProviding {
 
 @MainActor
 enum LocalModelStoreFixture {
-    static func make(availableRepositoryIDs: [String] = [], userDefaults: UserDefaults? = nil) throws -> LocalModelStore {
+    static func makeStorageDirectory(availableRepositoryIDs: [String]) throws -> URL {
         let storageDirectory = FileManager.default.temporaryDirectory
             .appendingPathComponent("LocalModelStoreFixture-\(UUID().uuidString)")
         try FileManager.default.createDirectory(at: storageDirectory, withIntermediateDirectories: true)
-        let defaults = userDefaults ?? UserDefaults(suiteName: "LocalModelStoreFixture-\(UUID().uuidString)")!
         for repositoryID in availableRepositoryIDs {
             let directoryName = repositoryID.replacingOccurrences(of: "/", with: "_")
             let modelDirectory = storageDirectory.appendingPathComponent(directoryName)
             try FileManager.default.createDirectory(at: modelDirectory, withIntermediateDirectories: true)
             FileManager.default.createFile(atPath: modelDirectory.appendingPathComponent(".complete").path, contents: nil)
         }
+        return storageDirectory
+    }
+
+    static func make(availableRepositoryIDs: [String] = [], userDefaults: UserDefaults? = nil) throws -> LocalModelStore {
+        let storageDirectory = try makeStorageDirectory(availableRepositoryIDs: availableRepositoryIDs)
+        let defaults = userDefaults ?? UserDefaults(suiteName: "LocalModelStoreFixture-\(UUID().uuidString)")!
         defaults.set(availableRepositoryIDs, forKey: "localModelRepositoryIDs")
         return LocalModelStore(userDefaults: defaults, storageDirectory: storageDirectory)
     }
@@ -231,6 +236,8 @@ struct LocalModelStoreTests {
     @Test func parseAcceptsHuggingFaceURL() {
         #expect(LocalModelStore.parseRepositoryID("https://huggingface.co/mlx-community/Llama-3.2-1B-Instruct-4bit") == "mlx-community/Llama-3.2-1B-Instruct-4bit")
         #expect(LocalModelStore.parseRepositoryID("huggingface.co/mlx-community/Llama-3.2-1B-Instruct-4bit/") == "mlx-community/Llama-3.2-1B-Instruct-4bit")
+        #expect(LocalModelStore.parseRepositoryID("https://huggingface.co/mlx-community/Llama-3.2-1B-Instruct-4bit?library=mlx") == "mlx-community/Llama-3.2-1B-Instruct-4bit")
+        #expect(LocalModelStore.parseRepositoryID("https://huggingface.co/mlx-community/Llama-3.2-1B-Instruct-4bit#model-card") == "mlx-community/Llama-3.2-1B-Instruct-4bit")
     }
 
     @Test func parseRejectsInvalidInput() {
@@ -259,9 +266,11 @@ struct LocalModelStoreTests {
 
     @Test func persistedModelsRestoreAcrossStoreInstances() throws {
         let defaults = UserDefaults(suiteName: "LocalModelStoreFixture-\(UUID().uuidString)")!
-        let store = try LocalModelStoreFixture.make(availableRepositoryIDs: ["test-org/Fixture-Model-4bit"], userDefaults: defaults)
-        #expect(store.models.count == 1)
-        #expect(defaults.stringArray(forKey: "localModelRepositoryIDs") == ["test-org/Fixture-Model-4bit"])
+        let storageDirectory = try LocalModelStoreFixture.makeStorageDirectory(availableRepositoryIDs: ["test-org/Fixture-Model-4bit"])
+        defaults.set(["test-org/Fixture-Model-4bit"], forKey: "localModelRepositoryIDs")
+        let restored = LocalModelStore(userDefaults: defaults, storageDirectory: storageDirectory)
+        #expect(restored.models.count == 1)
+        #expect(restored.pickerOptions.first?.id == "test-org/Fixture-Model-4bit")
     }
 
     @Test func removeDeletesModelAndPersistence() throws {
