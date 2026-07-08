@@ -59,6 +59,24 @@ struct FailingCatalog: ModelCatalogProviding {
 }
 
 @MainActor
+enum LocalModelStoreFixture {
+    static func make(availableRepositoryIDs: [String] = [], userDefaults: UserDefaults? = nil) throws -> LocalModelStore {
+        let storageDirectory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("LocalModelStoreFixture-\(UUID().uuidString)")
+        try FileManager.default.createDirectory(at: storageDirectory, withIntermediateDirectories: true)
+        let defaults = userDefaults ?? UserDefaults(suiteName: "LocalModelStoreFixture-\(UUID().uuidString)")!
+        for repositoryID in availableRepositoryIDs {
+            let directoryName = repositoryID.replacingOccurrences(of: "/", with: "_")
+            let modelDirectory = storageDirectory.appendingPathComponent(directoryName)
+            try FileManager.default.createDirectory(at: modelDirectory, withIntermediateDirectories: true)
+            FileManager.default.createFile(atPath: modelDirectory.appendingPathComponent(".complete").path, contents: nil)
+        }
+        defaults.set(availableRepositoryIDs, forKey: "localModelRepositoryIDs")
+        return LocalModelStore(userDefaults: defaults, storageDirectory: storageDirectory)
+    }
+}
+
+@MainActor
 struct ChatViewModelTests {
     private let options = [
         ModelOption(id: "anthropic/claude-sonnet-4-5", displayName: "Claude Sonnet 4.5", wireFormat: "anthropic-messages", contextWindow: 200_000),
@@ -76,47 +94,43 @@ struct ChatViewModelTests {
         )
     }
 
-    @Test func loadModelsWithEmptyKeyShowsOnDeviceModelsOnly() async {
-        let viewModel = ChatViewModel(
-            modelCatalog: HybridModelCatalog(cloud: FakeModelCatalog(models: options)),
-            chatService: FakeChatStream(pieces: [])
+    private func makeHybridViewModel(cloud: any ModelCatalogProviding) throws -> ChatViewModel {
+        let store = try LocalModelStoreFixture.make(availableRepositoryIDs: ["test-org/Fixture-Model-4bit"])
+        return ChatViewModel(
+            modelCatalog: HybridModelCatalog(store: store, cloud: cloud),
+            chatService: FakeChatStream(pieces: []),
+            localModelStore: store
         )
+    }
+
+    @Test func loadModelsWithEmptyKeyShowsOnDeviceModelsOnly() async throws {
+        let viewModel = try makeHybridViewModel(cloud: FakeModelCatalog(models: options))
         await viewModel.loadModels()
         #expect(!viewModel.models.isEmpty)
-        #expect(viewModel.models.allSatisfy { $0.wireFormat == LocalModelSupport.wireFormat })
+        #expect(viewModel.models.allSatisfy { $0.wireFormat == LocalModelStore.wireFormat })
         #expect(viewModel.selectedModelID == viewModel.models.first?.id)
     }
 
-    @Test func loadModelsWithKeyListsOnDeviceThenCloudModels() async {
-        let viewModel = ChatViewModel(
-            modelCatalog: HybridModelCatalog(cloud: FakeModelCatalog(models: options)),
-            chatService: FakeChatStream(pieces: [])
-        )
+    @Test func loadModelsWithKeyListsOnDeviceThenCloudModels() async throws {
+        let viewModel = try makeHybridViewModel(cloud: FakeModelCatalog(models: options))
         viewModel.applicationKey = "swb_test"
         await viewModel.loadModels()
-        let onDeviceCount = LocalModelSupport.models.count
-        #expect(viewModel.models.prefix(onDeviceCount).allSatisfy { $0.wireFormat == LocalModelSupport.wireFormat })
+        #expect(viewModel.models.first?.wireFormat == LocalModelStore.wireFormat)
         #expect(Array(viewModel.models.suffix(options.count)) == options)
     }
 
-    @Test func cloudCatalogFailureKeepsOnDeviceModelsAndSurfacesError() async {
-        let viewModel = ChatViewModel(
-            modelCatalog: HybridModelCatalog(cloud: FailingCatalog()),
-            chatService: FakeChatStream(pieces: [])
-        )
+    @Test func cloudCatalogFailureKeepsOnDeviceModelsAndSurfacesError() async throws {
+        let viewModel = try makeHybridViewModel(cloud: FailingCatalog())
         viewModel.applicationKey = "swb_test"
         await viewModel.loadModels()
         #expect(viewModel.statusMessage == "stream failed")
         #expect(!viewModel.models.isEmpty)
-        #expect(viewModel.models.allSatisfy { $0.wireFormat == LocalModelSupport.wireFormat })
+        #expect(viewModel.models.allSatisfy { $0.wireFormat == LocalModelStore.wireFormat })
         #expect(viewModel.selectedModelID == viewModel.models.first?.id)
     }
 
-    @Test func canSendAllowsOnDeviceModelWithoutApplicationKey() async {
-        let viewModel = ChatViewModel(
-            modelCatalog: HybridModelCatalog(cloud: FakeModelCatalog(models: options)),
-            chatService: FakeChatStream(pieces: [])
-        )
+    @Test func canSendAllowsOnDeviceModelWithoutApplicationKey() async throws {
+        let viewModel = try makeHybridViewModel(cloud: FakeModelCatalog(models: options))
         await viewModel.loadModels()
         viewModel.draft = "Hello"
         #expect(viewModel.canSend)
@@ -135,17 +149,14 @@ struct ChatViewModelTests {
         #expect(viewModel.selectedModelID == nil)
     }
 
-    @Test func loadModelsWithEmptyKeyDropsCloudModels() async {
-        let viewModel = ChatViewModel(
-            modelCatalog: HybridModelCatalog(cloud: FakeModelCatalog(models: options)),
-            chatService: FakeChatStream(pieces: [])
-        )
+    @Test func loadModelsWithEmptyKeyDropsCloudModels() async throws {
+        let viewModel = try makeHybridViewModel(cloud: FakeModelCatalog(models: options))
         viewModel.applicationKey = "swb_test"
         await viewModel.loadModels()
-        #expect(viewModel.models.count == LocalModelSupport.models.count + options.count)
+        #expect(viewModel.models.count == 1 + options.count)
         viewModel.applicationKey = ""
         await viewModel.loadModels()
-        #expect(viewModel.models.allSatisfy { $0.wireFormat == LocalModelSupport.wireFormat })
+        #expect(viewModel.models.allSatisfy { $0.wireFormat == LocalModelStore.wireFormat })
     }
 
     @Test func loadModelsPopulatesAndSelectsFirst() async {
@@ -208,6 +219,59 @@ struct ChatViewModelTests {
         #expect(viewModel.canSend == false)
         await viewModel.send()
         #expect(viewModel.transcript.isEmpty)
+    }
+}
+
+@MainActor
+struct LocalModelStoreTests {
+    @Test func parseAcceptsBareRepositoryID() {
+        #expect(LocalModelStore.parseRepositoryID("mlx-community/Qwen2.5-3B-Instruct-4bit") == "mlx-community/Qwen2.5-3B-Instruct-4bit")
+    }
+
+    @Test func parseAcceptsHuggingFaceURL() {
+        #expect(LocalModelStore.parseRepositoryID("https://huggingface.co/mlx-community/Llama-3.2-1B-Instruct-4bit") == "mlx-community/Llama-3.2-1B-Instruct-4bit")
+        #expect(LocalModelStore.parseRepositoryID("huggingface.co/mlx-community/Llama-3.2-1B-Instruct-4bit/") == "mlx-community/Llama-3.2-1B-Instruct-4bit")
+    }
+
+    @Test func parseRejectsInvalidInput() {
+        #expect(LocalModelStore.parseRepositoryID("not a repo") == nil)
+        #expect(LocalModelStore.parseRepositoryID("justonecomponent") == nil)
+        #expect(LocalModelStore.parseRepositoryID("too/many/components") == nil)
+        #expect(LocalModelStore.parseRepositoryID("") == nil)
+    }
+
+    @Test func downloadedModelIsAvailableInPickerOptions() throws {
+        let store = try LocalModelStoreFixture.make(availableRepositoryIDs: ["test-org/Fixture-Model-4bit"])
+        #expect(store.pickerOptions.count == 1)
+        #expect(store.pickerOptions.first?.wireFormat == LocalModelStore.wireFormat)
+        #expect(store.pickerOptions.first?.id == "test-org/Fixture-Model-4bit")
+    }
+
+    @Test func addRejectsInvalidInputAndDeduplicates() throws {
+        let store = try LocalModelStoreFixture.make(availableRepositoryIDs: ["test-org/Fixture-Model-4bit"])
+        #expect(throws: LocalModelStore.InputError.self) {
+            try store.add("nonsense")
+        }
+        let existing = try store.add("test-org/Fixture-Model-4bit")
+        #expect(store.models.count == 1)
+        #expect(existing.id == "test-org/Fixture-Model-4bit")
+    }
+
+    @Test func persistedModelsRestoreAcrossStoreInstances() throws {
+        let defaults = UserDefaults(suiteName: "LocalModelStoreFixture-\(UUID().uuidString)")!
+        let store = try LocalModelStoreFixture.make(availableRepositoryIDs: ["test-org/Fixture-Model-4bit"], userDefaults: defaults)
+        #expect(store.models.count == 1)
+        #expect(defaults.stringArray(forKey: "localModelRepositoryIDs") == ["test-org/Fixture-Model-4bit"])
+    }
+
+    @Test func removeDeletesModelAndPersistence() throws {
+        let defaults = UserDefaults(suiteName: "LocalModelStoreFixture-\(UUID().uuidString)")!
+        let store = try LocalModelStoreFixture.make(availableRepositoryIDs: ["test-org/Fixture-Model-4bit"], userDefaults: defaults)
+        let localModel = try #require(store.model(for: "test-org/Fixture-Model-4bit"))
+        store.remove(localModel)
+        #expect(store.models.isEmpty)
+        #expect(store.pickerOptions.isEmpty)
+        #expect(defaults.stringArray(forKey: "localModelRepositoryIDs") == [])
     }
 }
 

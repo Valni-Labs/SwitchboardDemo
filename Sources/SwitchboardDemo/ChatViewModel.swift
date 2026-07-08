@@ -1,11 +1,13 @@
 import Foundation
 import Observation
+import SwitchboardLocal
 
 @Observable
 @MainActor
 final class ChatViewModel {
     private let modelCatalog: ModelCatalogProviding?
     private let chatService: ChatStreaming?
+    let localModelStore: LocalModelStore?
 
     var applicationKey = ""
     var endUserKey = ""
@@ -19,15 +21,40 @@ final class ChatViewModel {
 
     private var modelLoadTask: Task<Void, Never>?
 
-    init(modelCatalog: ModelCatalogProviding, chatService: ChatStreaming) {
+    init(modelCatalog: ModelCatalogProviding, chatService: ChatStreaming, localModelStore: LocalModelStore? = nil) {
         self.modelCatalog = modelCatalog
         self.chatService = chatService
+        self.localModelStore = localModelStore
+        localModelStore?.onAvailabilityChange = { [weak self] newlyAvailableID in
+            Task { await self?.handleLocalAvailabilityChange(newlyAvailableID) }
+        }
     }
 
     init(setupError: String) {
         modelCatalog = nil
         chatService = nil
+        localModelStore = nil
         statusMessage = setupError
+    }
+
+    func addLocalModel(_ input: String) {
+        guard let localModelStore else { return }
+        do {
+            try localModelStore.add(input)
+        } catch {
+            statusMessage = error.localizedDescription
+        }
+    }
+
+    func removeLocalModel(_ localModel: LocalModel) {
+        localModelStore?.remove(localModel)
+    }
+
+    private func handleLocalAvailabilityChange(_ newlyAvailableID: String?) async {
+        await loadModels()
+        if let newlyAvailableID, models.contains(where: { $0.id == newlyAvailableID }) {
+            selectedModelID = newlyAvailableID
+        }
     }
 
     private var trimmedApplicationKey: String {
@@ -47,7 +74,7 @@ final class ChatViewModel {
     }
 
     private var isSelectedModelOnDevice: Bool {
-        selectedModel?.wireFormat == LocalModelSupport.wireFormat
+        selectedModel?.wireFormat == LocalModelStore.wireFormat
     }
 
     func reloadModelsAfterKeyChange() {
