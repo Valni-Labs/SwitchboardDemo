@@ -3,6 +3,7 @@ import SwiftUI
 struct ChatView: View {
     @Bindable var viewModel: ChatViewModel
     @State private var isConfigurationExpanded = true
+    @State private var isCloudInfoPresented = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -119,8 +120,23 @@ struct ChatView: View {
         HStack(alignment: .top, spacing: 12) {
             GroupBox {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Cloud models")
-                        .font(.title3.bold())
+                    HStack(spacing: 6) {
+                        Text("Cloud models")
+                            .font(.title3.bold())
+                        Button {
+                            isCloudInfoPresented.toggle()
+                        } label: {
+                            Image(systemName: "info.circle")
+                                .foregroundStyle(.secondary)
+                        }
+                        .buttonStyle(.plain)
+                        .popover(isPresented: $isCloudInfoPresented, arrowEdge: .bottom) {
+                            Text("This key entry is for demo purposes only. In a real app, keys live in your backend's environment; see key management best practices in the docs.\n\nApplication Key: your company's Switchboard credential. It authenticates every request and meters usage and spend to your account. Minted in the platform portal and shown once.\n\nEnd User Key: optional. It attributes requests to one of your registered end users so usage reports break down per user. It never carries funds; balances stay at the company level.")
+                                .font(.callout)
+                                .frame(width: 360, alignment: .leading)
+                                .padding()
+                        }
+                    }
                     HStack(alignment: .bottom, spacing: 8) {
                         VStack(alignment: .leading, spacing: 2) {
                             Text("Application Key")
@@ -143,12 +159,6 @@ struct ChatView: View {
                                 .frame(width: 200)
                         }
                     }
-                    Text("For demo only — see [platform.valni.ai](https://platform.valni.ai) for key management best practices.")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                    Text("Mint keys at valni.ai in platform/account.")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
                 }
                 .padding(8)
                 .frame(width: 432, alignment: .topLeading)
