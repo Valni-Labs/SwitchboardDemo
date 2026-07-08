@@ -20,9 +20,10 @@ struct SwitchboardDemoApp: App {
     private static func makeViewModel() -> ChatViewModel {
         do {
             let configuration = try DemoConfiguration.fromEnvironment()
-            let modelCatalog = HybridModelCatalog(cloud: SwitchboardModelCatalog(baseURL: configuration.baseURL))
-            let chatService = HybridChatService(cloud: SwitchboardChatService(baseURL: configuration.baseURL))
-            return ChatViewModel(modelCatalog: modelCatalog, chatService: chatService)
+            let localModelStore = LocalModelStore()
+            let modelCatalog = HybridModelCatalog(store: localModelStore, cloud: SwitchboardModelCatalog(baseURL: configuration.baseURL))
+            let chatService = HybridChatService(store: localModelStore, cloud: SwitchboardChatService(baseURL: configuration.baseURL))
+            return ChatViewModel(modelCatalog: modelCatalog, chatService: chatService, localModelStore: localModelStore)
         } catch {
             return ChatViewModel(setupError: error.localizedDescription)
         }

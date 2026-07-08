@@ -24,6 +24,8 @@ struct ChatView: View {
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
+                    LocalModelSectionView(viewModel: viewModel)
+                        .padding(.top, 8)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 VStack(alignment: .leading, spacing: 6) {
@@ -109,7 +111,7 @@ struct ChatView: View {
         if viewModel.isLoadingModels { return nil }
         guard viewModel.models.isEmpty else { return nil }
         return viewModel.applicationKey.isEmpty
-            ? "Enter your Application Key to load models."
+            ? "Enter your Application Key for cloud models, or load a local model below."
             : "No models available for this key."
     }
 
