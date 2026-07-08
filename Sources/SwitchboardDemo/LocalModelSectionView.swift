@@ -18,16 +18,16 @@ struct LocalModelSectionView: View {
                     Button("Load", action: load)
                         .disabled(LocalModelStore.parseRepositoryID(repositoryInput) == nil)
                 }
-                HStack(spacing: 12) {
+                Menu("Suggested local models") {
                     ForEach(LocalModelStore.suggestions) { suggestion in
                         Button("\(suggestion.displayName) · \(suggestion.approximateSize)") {
                             repositoryInput = suggestion.repositoryID
                         }
-                        .buttonStyle(.link)
-                        .font(.caption)
                         .disabled(store.model(for: suggestion.repositoryID) != nil)
                     }
                 }
+                .font(.caption)
+                .fixedSize()
                 ForEach(store.models) { localModel in
                     LocalModelRowView(localModel: localModel) {
                         viewModel.removeLocalModel(localModel)
@@ -76,6 +76,7 @@ struct LocalModelRowView: View {
         switch localModel.state {
         case .notDownloaded:
             Text("Not downloaded").font(.caption).foregroundStyle(.secondary)
+            Button("Download") { localModel.download() }.font(.caption)
         case .downloading(let progress, _, _):
             ProgressView(value: progress)
                 .frame(width: 120)

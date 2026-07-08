@@ -74,20 +74,26 @@ struct ChatView: View {
             Divider()
 
             HStack(spacing: 12) {
-                if viewModel.models.isEmpty {
-                    Text("Enter keys or download a model.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .fixedSize()
-                } else {
-                    Picker("Model", selection: $viewModel.selectedModelID) {
-                        ForEach(viewModel.models) { option in
-                            Text(option.displayName).tag(Optional(option.id))
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Model picker")
+                        .font(.caption.bold())
+                    if viewModel.models.isEmpty {
+                        Text("Configure needed")
+                            .foregroundStyle(.secondary)
+                    } else {
+                        Picker("Model", selection: $viewModel.selectedModelID) {
+                            ForEach(viewModel.models) { option in
+                                Text(option.displayName).tag(Optional(option.id))
+                            }
                         }
+                        .labelsHidden()
+                        .fixedSize()
                     }
-                    .labelsHidden()
-                    .fixedSize()
+                    Text("Enter keys or download a model.")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
                 }
+                .fixedSize()
                 if viewModel.isLoadingModels {
                     ProgressView()
                         .controlSize(.small)
