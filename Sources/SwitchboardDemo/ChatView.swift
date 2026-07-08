@@ -131,7 +131,7 @@ struct ChatView: View {
                         }
                         .buttonStyle(.plain)
                         .popover(isPresented: $isCloudInfoPresented, arrowEdge: .bottom) {
-                            Text("This key entry is for demo purposes only. In a real app, keys live in your backend's environment; see key management best practices in the docs.\n\nApplication Key: your company's Switchboard credential. It authenticates every request and meters usage and spend to your account. Minted in the platform portal and shown once.\n\nEnd User Key: required. Every request is attributed to an end user registered under your Application Key in the platform portal, so usage reports break down per user. It never carries funds; balances stay at the company level.")
+                            Text("This key entry is for demo purposes only. In a real app, keys live in your backend's environment; see key management best practices in the docs.\n\nApplication Key: your company's Switchboard credential. It authenticates every request and meters usage and spend to your account. Minted in the platform portal and shown once.\n\nEnd User Key: attributes the request to an end user registered under your Application Key in the platform portal, so usage reports break down per user. The demo lets you send without one, but the API rejects requests it cannot attribute. It never carries funds; balances stay at the company level.")
                                 .font(.callout)
                                 .frame(width: 360, alignment: .leading)
                                 .padding()
