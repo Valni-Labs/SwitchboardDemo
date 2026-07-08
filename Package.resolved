@@ -139,7 +139,7 @@
     {
       "identity" : "switchboard-swift",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/Benovi-Labs/switchboard-swift",
+      "location" : "https://github.com/valni-labs/switchboard-swift",
       "state" : {
         "revision" : "96b828f424714953d17db3d584676c4891de6f69",
         "version" : "0.4.0"

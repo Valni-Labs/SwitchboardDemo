@@ -5,7 +5,7 @@ let package = Package(
     name: "SwitchboardDemo",
     platforms: [.macOS(.v14)],
     dependencies: [
-        .package(url: "https://github.com/Benovi-Labs/switchboard-swift", from: "0.4.0"),
+        .package(url: "https://github.com/valni-labs/switchboard-swift", from: "0.4.0"),
     ],
     targets: [
         .executableTarget(
