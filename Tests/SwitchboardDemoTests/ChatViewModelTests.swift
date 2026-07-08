@@ -70,11 +70,37 @@ struct ChatViewModelTests {
         )
     }
 
-    @Test func loadModelsRequiresApplicationKey() async {
-        let viewModel = makeViewModel()
+    @Test func loadModelsWithEmptyKeyShowsOnDeviceModelsOnly() async {
+        let viewModel = ChatViewModel(
+            modelCatalog: HybridModelCatalog(cloud: FakeModelCatalog(models: options)),
+            chatService: FakeChatStream(pieces: [])
+        )
         await viewModel.loadModels()
-        #expect(viewModel.models.isEmpty)
-        #expect(viewModel.selectedModelID == nil)
+        #expect(!viewModel.models.isEmpty)
+        #expect(viewModel.models.allSatisfy { $0.wireFormat == LocalModelSupport.wireFormat })
+        #expect(viewModel.selectedModelID == viewModel.models.first?.id)
+    }
+
+    @Test func loadModelsWithKeyListsOnDeviceThenCloudModels() async {
+        let viewModel = ChatViewModel(
+            modelCatalog: HybridModelCatalog(cloud: FakeModelCatalog(models: options)),
+            chatService: FakeChatStream(pieces: [])
+        )
+        viewModel.applicationKey = "swb_test"
+        await viewModel.loadModels()
+        let onDeviceCount = LocalModelSupport.models.count
+        #expect(viewModel.models.prefix(onDeviceCount).allSatisfy { $0.wireFormat == LocalModelSupport.wireFormat })
+        #expect(Array(viewModel.models.suffix(options.count)) == options)
+    }
+
+    @Test func canSendAllowsOnDeviceModelWithoutApplicationKey() async {
+        let viewModel = ChatViewModel(
+            modelCatalog: HybridModelCatalog(cloud: FakeModelCatalog(models: options)),
+            chatService: FakeChatStream(pieces: [])
+        )
+        await viewModel.loadModels()
+        viewModel.draft = "Hello"
+        #expect(viewModel.canSend)
     }
 
     @Test func loadModelsDropsResultsWhenKeyChangesDuringLoad() async {
@@ -90,15 +116,17 @@ struct ChatViewModelTests {
         #expect(viewModel.selectedModelID == nil)
     }
 
-    @Test func loadModelsClearsModelsWhenKeyRemoved() async {
-        let viewModel = makeViewModel()
+    @Test func loadModelsWithEmptyKeyDropsCloudModels() async {
+        let viewModel = ChatViewModel(
+            modelCatalog: HybridModelCatalog(cloud: FakeModelCatalog(models: options)),
+            chatService: FakeChatStream(pieces: [])
+        )
         viewModel.applicationKey = "swb_test"
         await viewModel.loadModels()
-        #expect(!viewModel.models.isEmpty)
+        #expect(viewModel.models.count == LocalModelSupport.models.count + options.count)
         viewModel.applicationKey = ""
         await viewModel.loadModels()
-        #expect(viewModel.models.isEmpty)
-        #expect(viewModel.selectedModelID == nil)
+        #expect(viewModel.models.allSatisfy { $0.wireFormat == LocalModelSupport.wireFormat })
     }
 
     @Test func loadModelsPopulatesAndSelectsFirst() async {
