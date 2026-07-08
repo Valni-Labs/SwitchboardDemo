@@ -16,6 +16,7 @@
 		D300000000000000000001C7 /* ModelOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001B7 /* ModelOption.swift */; };
 		D300000000000000000001C8 /* SwitchboardChatService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001B8 /* SwitchboardChatService.swift */; };
 		D300000000000000000001F2 /* LocalModelStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001F1 /* LocalModelStore.swift */; };
+		D300000000000000000001F8 /* HybridServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001F7 /* HybridServices.swift */; };
 		D300000000000000000001F6 /* LocalModelSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001F5 /* LocalModelSectionView.swift */; };
 		D300000000000000000001F4 /* SwitchboardLocal in Frameworks */ = {isa = PBXBuildFile; productRef = D300000000000000000001F3 /* SwitchboardLocal */; };
 		D300000000000000000001C9 /* SwitchboardDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001B9 /* SwitchboardDemoApp.swift */; };
@@ -34,6 +35,7 @@
 		D300000000000000000001B7 /* ModelOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelOption.swift; sourceTree = "<group>"; };
 		D300000000000000000001B8 /* SwitchboardChatService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchboardChatService.swift; sourceTree = "<group>"; };
 		D300000000000000000001F1 /* LocalModelStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalModelStore.swift; sourceTree = "<group>"; };
+		D300000000000000000001F7 /* HybridServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HybridServices.swift; sourceTree = "<group>"; };
 		D300000000000000000001F5 /* LocalModelSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalModelSectionView.swift; sourceTree = "<group>"; };
 		D300000000000000000001B9 /* SwitchboardDemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchboardDemoApp.swift; sourceTree = "<group>"; };
 		D300000000000000000001BA /* TranscriptEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscriptEntry.swift; sourceTree = "<group>"; };
@@ -65,21 +67,30 @@
 		D300000000000000000001A4 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				D300000000000000000001F9 /* SwitchboardIntegration */,
 				D300000000000000000001B1 /* ChatStreaming.swift */,
 				D300000000000000000001B2 /* ChatView.swift */,
 				D300000000000000000001B3 /* ChatViewModel.swift */,
-				D300000000000000000001B4 /* DemoConfiguration.swift */,
-				D300000000000000000001B5 /* SwitchboardModelCatalog.swift */,
 				D300000000000000000001B6 /* ModelCatalogProviding.swift */,
 				D300000000000000000001B7 /* ModelOption.swift */,
-				D300000000000000000001B8 /* SwitchboardChatService.swift */,
-				D300000000000000000001F1 /* LocalModelStore.swift */,
 				D300000000000000000001F5 /* LocalModelSectionView.swift */,
 				D300000000000000000001B9 /* SwitchboardDemoApp.swift */,
 				D300000000000000000001BA /* TranscriptEntry.swift */,
 				D300000000000000000001BB /* TranscriptEntryView.swift */,
 			);
 			path = Sources/SwitchboardDemo;
+			sourceTree = "<group>";
+		};
+		D300000000000000000001F9 /* SwitchboardIntegration */ = {
+			isa = PBXGroup;
+			children = (
+				D300000000000000000001B4 /* DemoConfiguration.swift */,
+				D300000000000000000001F7 /* HybridServices.swift */,
+				D300000000000000000001F1 /* LocalModelStore.swift */,
+				D300000000000000000001B8 /* SwitchboardChatService.swift */,
+				D300000000000000000001B5 /* SwitchboardModelCatalog.swift */,
+			);
+			path = SwitchboardIntegration;
 			sourceTree = "<group>";
 		};
 		D300000000000000000001E2 /* Products */ = {
@@ -164,6 +175,7 @@
 				D300000000000000000001C7 /* ModelOption.swift in Sources */,
 				D300000000000000000001C8 /* SwitchboardChatService.swift in Sources */,
 				D300000000000000000001F2 /* LocalModelStore.swift in Sources */,
+				D300000000000000000001F8 /* HybridServices.swift in Sources */,
 				D300000000000000000001F6 /* LocalModelSectionView.swift in Sources */,
 				D300000000000000000001C9 /* SwitchboardDemoApp.swift in Sources */,
 				D300000000000000000001CA /* TranscriptEntry.swift in Sources */,
