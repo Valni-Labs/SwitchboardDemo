@@ -52,6 +52,12 @@ struct FakeStreamError: LocalizedError {
     var errorDescription: String? { "stream failed" }
 }
 
+struct FailingCatalog: ModelCatalogProviding {
+    func loadModels(applicationKey: String) async throws -> [ModelOption] {
+        throw FakeStreamError()
+    }
+}
+
 @MainActor
 struct ChatViewModelTests {
     private let options = [
@@ -91,6 +97,19 @@ struct ChatViewModelTests {
         let onDeviceCount = LocalModelSupport.models.count
         #expect(viewModel.models.prefix(onDeviceCount).allSatisfy { $0.wireFormat == LocalModelSupport.wireFormat })
         #expect(Array(viewModel.models.suffix(options.count)) == options)
+    }
+
+    @Test func cloudCatalogFailureKeepsOnDeviceModelsAndSurfacesError() async {
+        let viewModel = ChatViewModel(
+            modelCatalog: HybridModelCatalog(cloud: FailingCatalog()),
+            chatService: FakeChatStream(pieces: [])
+        )
+        viewModel.applicationKey = "swb_test"
+        await viewModel.loadModels()
+        #expect(viewModel.statusMessage == "stream failed")
+        #expect(!viewModel.models.isEmpty)
+        #expect(viewModel.models.allSatisfy { $0.wireFormat == LocalModelSupport.wireFormat })
+        #expect(viewModel.selectedModelID == viewModel.models.first?.id)
     }
 
     @Test func canSendAllowsOnDeviceModelWithoutApplicationKey() async {

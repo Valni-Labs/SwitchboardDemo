@@ -74,9 +74,13 @@ final class ChatViewModel {
             statusMessage = nil
         } catch {
             guard key == trimmedApplicationKey else { return }
-            models = []
-            selectedModelID = nil
             statusMessage = error.localizedDescription
+            let keylessModels = (try? await modelCatalog.loadModels(applicationKey: "")) ?? []
+            guard key == trimmedApplicationKey else { return }
+            models = keylessModels
+            if selectedModelID == nil || !keylessModels.contains(where: { $0.id == selectedModelID }) {
+                selectedModelID = keylessModels.first?.id
+            }
         }
     }
 
