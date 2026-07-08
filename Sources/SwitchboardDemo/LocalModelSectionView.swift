@@ -18,11 +18,12 @@ struct LocalModelSectionView: View {
                     Button("Load", action: load)
                         .disabled(LocalModelStore.parseRepositoryID(repositoryInput) == nil)
                 }
-                HStack(spacing: 6) {
+                HStack(spacing: 12) {
                     ForEach(LocalModelStore.suggestions) { suggestion in
                         Button("\(suggestion.displayName) · \(suggestion.approximateSize)") {
-                            viewModel.addLocalModel(suggestion.repositoryID)
+                            repositoryInput = suggestion.repositoryID
                         }
+                        .buttonStyle(.link)
                         .font(.caption)
                         .disabled(store.model(for: suggestion.repositoryID) != nil)
                     }

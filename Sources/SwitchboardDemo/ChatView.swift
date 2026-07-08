@@ -6,28 +6,8 @@ struct ChatView: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack(alignment: .top, spacing: 16) {
-                VStack(alignment: .leading, spacing: 4) {
-                    HStack(spacing: 8) {
-                        Picker("Model", selection: $viewModel.selectedModelID) {
-                            ForEach(viewModel.models) { option in
-                                Text(option.displayName).tag(Optional(option.id))
-                            }
-                        }
-                        .frame(maxWidth: 320)
-                        if viewModel.isLoadingModels {
-                            ProgressView()
-                                .controlSize(.small)
-                        }
-                    }
-                    if let hint = modelPickerHint {
-                        Text(hint)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                    LocalModelSectionView(viewModel: viewModel)
-                        .padding(.top, 8)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
+                LocalModelSectionView(viewModel: viewModel)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 VStack(alignment: .leading, spacing: 6) {
                     HStack(alignment: .bottom, spacing: 8) {
                         VStack(alignment: .leading, spacing: 2) {
@@ -94,6 +74,24 @@ struct ChatView: View {
             Divider()
 
             HStack(spacing: 12) {
+                if viewModel.models.isEmpty {
+                    Text("Enter keys or download a model.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize()
+                } else {
+                    Picker("Model", selection: $viewModel.selectedModelID) {
+                        ForEach(viewModel.models) { option in
+                            Text(option.displayName).tag(Optional(option.id))
+                        }
+                    }
+                    .labelsHidden()
+                    .fixedSize()
+                }
+                if viewModel.isLoadingModels {
+                    ProgressView()
+                        .controlSize(.small)
+                }
                 TextField("Message", text: $viewModel.draft)
                     .textFieldStyle(.plain)
                     .onSubmit(submit)
@@ -105,14 +103,6 @@ struct ChatView: View {
         }
         .frame(minWidth: 820, minHeight: 480)
         .task { await viewModel.loadModels() }
-    }
-
-    private var modelPickerHint: String? {
-        if viewModel.isLoadingModels { return nil }
-        guard viewModel.models.isEmpty else { return nil }
-        return viewModel.applicationKey.isEmpty
-            ? "Enter your Application Key for cloud models, or load a local model below."
-            : "No models available for this key."
     }
 
     private func submit() {
