@@ -14,7 +14,7 @@
 		D300000000000000000001C5 /* SwitchboardModelCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001B5 /* SwitchboardModelCatalog.swift */; };
 		D300000000000000000001C6 /* ModelCatalogProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001B6 /* ModelCatalogProviding.swift */; };
 		D300000000000000000001C7 /* ModelOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001B7 /* ModelOption.swift */; };
-		D300000000000000000001C8 /* SwitchboardChatService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001B8 /* SwitchboardChatService.swift */; };
+		D300000000000000000001C8 /* SwitchboardInference.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001B8 /* SwitchboardInference.swift */; };
 		D300000000000000000001F2 /* LocalModelStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001F1 /* LocalModelStore.swift */; };
 		D300000000000000000001F8 /* HybridServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001F7 /* HybridServices.swift */; };
 		D300000000000000000001F6 /* LocalModelSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001F5 /* LocalModelSectionView.swift */; };
@@ -33,7 +33,7 @@
 		D300000000000000000001B5 /* SwitchboardModelCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchboardModelCatalog.swift; sourceTree = "<group>"; };
 		D300000000000000000001B6 /* ModelCatalogProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelCatalogProviding.swift; sourceTree = "<group>"; };
 		D300000000000000000001B7 /* ModelOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelOption.swift; sourceTree = "<group>"; };
-		D300000000000000000001B8 /* SwitchboardChatService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchboardChatService.swift; sourceTree = "<group>"; };
+		D300000000000000000001B8 /* SwitchboardInference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchboardInference.swift; sourceTree = "<group>"; };
 		D300000000000000000001F1 /* LocalModelStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalModelStore.swift; sourceTree = "<group>"; };
 		D300000000000000000001F7 /* HybridServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HybridServices.swift; sourceTree = "<group>"; };
 		D300000000000000000001F5 /* LocalModelSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalModelSectionView.swift; sourceTree = "<group>"; };
@@ -87,7 +87,7 @@
 				D300000000000000000001B4 /* DemoConfiguration.swift */,
 				D300000000000000000001F7 /* HybridServices.swift */,
 				D300000000000000000001F1 /* LocalModelStore.swift */,
-				D300000000000000000001B8 /* SwitchboardChatService.swift */,
+				D300000000000000000001B8 /* SwitchboardInference.swift */,
 				D300000000000000000001B5 /* SwitchboardModelCatalog.swift */,
 			);
 			path = SwitchboardIntegration;
@@ -173,7 +173,7 @@
 				D300000000000000000001C5 /* SwitchboardModelCatalog.swift in Sources */,
 				D300000000000000000001C6 /* ModelCatalogProviding.swift in Sources */,
 				D300000000000000000001C7 /* ModelOption.swift in Sources */,
-				D300000000000000000001C8 /* SwitchboardChatService.swift in Sources */,
+				D300000000000000000001C8 /* SwitchboardInference.swift in Sources */,
 				D300000000000000000001F2 /* LocalModelStore.swift in Sources */,
 				D300000000000000000001F8 /* HybridServices.swift in Sources */,
 				D300000000000000000001F6 /* LocalModelSectionView.swift in Sources */,
