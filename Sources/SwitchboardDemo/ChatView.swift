@@ -5,44 +5,52 @@ struct ChatView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            HStack(alignment: .top, spacing: 16) {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("Cloud models")
-                        .font(.title3.bold())
-                    HStack(alignment: .bottom, spacing: 8) {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("Application Key")
-                                .font(.caption.bold())
-                                .foregroundStyle(.primary)
-                            SecureField("Your company key", text: $viewModel.applicationKey)
-                                .textFieldStyle(.roundedBorder)
-                                .frame(width: 200)
-                                .onSubmit { Task { await viewModel.loadModels() } }
-                                .onChange(of: viewModel.applicationKey) {
-                                    viewModel.reloadModelsAfterKeyChange()
-                                }
+            HStack(alignment: .top, spacing: 12) {
+                GroupBox {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Cloud models")
+                            .font(.title3.bold())
+                        HStack(alignment: .bottom, spacing: 8) {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Application Key")
+                                    .font(.caption.bold())
+                                    .foregroundStyle(.primary)
+                                SecureField("Your company key", text: $viewModel.applicationKey)
+                                    .textFieldStyle(.roundedBorder)
+                                    .frame(width: 200)
+                                    .onSubmit { Task { await viewModel.loadModels() } }
+                                    .onChange(of: viewModel.applicationKey) {
+                                        viewModel.reloadModelsAfterKeyChange()
+                                    }
+                            }
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("End User Key")
+                                    .font(.caption.bold())
+                                    .foregroundStyle(.primary)
+                                TextField("User of your app key", text: $viewModel.endUserKey)
+                                    .textFieldStyle(.roundedBorder)
+                                    .frame(width: 200)
+                            }
                         }
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("End User Key")
-                                .font(.caption.bold())
-                                .foregroundStyle(.primary)
-                            TextField("User of your app key", text: $viewModel.endUserKey)
-                                .textFieldStyle(.roundedBorder)
-                                .frame(width: 200)
-                        }
+                        Text("For demo only — see [platform.valni.ai](https://platform.valni.ai) for key management best practices.")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                        Text("Mint keys at valni.ai in platform/account.")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
                     }
-                    Text("For demo only — see [platform.valni.ai](https://platform.valni.ai) for key management best practices.")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                    Text("Mint keys at valni.ai in platform/account.")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
+                    .padding(8)
+                    .frame(width: 432, alignment: .topLeading)
+                    .frame(maxHeight: .infinity, alignment: .topLeading)
                 }
-                .frame(width: 416, alignment: .leading)
-                LocalModelSectionView(viewModel: viewModel)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                GroupBox {
+                    LocalModelSectionView(viewModel: viewModel)
+                        .padding(8)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                }
             }
-            .padding()
+            .fixedSize(horizontal: false, vertical: true)
+            .padding(12)
 
             Divider()
 
@@ -75,51 +83,58 @@ struct ChatView: View {
 
             Divider()
 
-            HStack(spacing: 12) {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Model picker")
-                        .font(.caption.bold())
-                    if viewModel.models.isEmpty {
-                        Picker("Model", selection: $viewModel.selectedModelID) {
-                            Text("Configure needed").tag(String?.none)
-                        }
-                        .labelsHidden()
-                        .fixedSize()
-                        .disabled(true)
-                    } else {
-                        Picker("Model", selection: $viewModel.selectedModelID) {
-                            ForEach(viewModel.models) { option in
-                                Text(option.displayName).tag(Optional(option.id))
+            HStack(spacing: 0) {
+                HStack(spacing: 12) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Model picker")
+                            .font(.caption.bold())
+                        if viewModel.models.isEmpty {
+                            Picker("Model", selection: $viewModel.selectedModelID) {
+                                Text("Configure needed").tag(String?.none)
                             }
+                            .labelsHidden()
+                            .fixedSize()
+                            .disabled(true)
+                        } else {
+                            Picker("Model", selection: $viewModel.selectedModelID) {
+                                ForEach(viewModel.models) { option in
+                                    Text(option.displayName).tag(Optional(option.id))
+                                }
+                            }
+                            .labelsHidden()
+                            .fixedSize()
                         }
-                        .labelsHidden()
-                        .fixedSize()
+                        Text("Enter keys or download a model.")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
                     }
-                    Text("Enter keys or download a model.")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
+                    .fixedSize()
+                    if viewModel.isLoadingModels {
+                        ProgressView()
+                            .controlSize(.small)
+                    }
                 }
-                .fixedSize()
-                if viewModel.isLoadingModels {
-                    ProgressView()
-                        .controlSize(.small)
-                }
+                .padding()
+
                 Divider()
+
                 TextField("Message", text: $viewModel.draft)
                     .textFieldStyle(.plain)
                     .onSubmit(submit)
+                    .padding()
+
                 Button("Send", action: submit)
                     .keyboardShortcut(.defaultAction)
                     .disabled(!viewModel.canSend)
+                    .padding(.trailing)
             }
             .frame(height: Self.inputBarHeight)
-            .padding()
         }
         .frame(minWidth: 820, minHeight: 480)
         .task { await viewModel.loadModels() }
     }
 
-    private static let inputBarHeight: CGFloat = 60
+    private static let inputBarHeight: CGFloat = 84
 
     private func submit() {
         guard viewModel.canSend else { return }
