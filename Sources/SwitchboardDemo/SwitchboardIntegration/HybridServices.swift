@@ -1,5 +1,3 @@
-import Foundation
-
 final class HybridModelCatalog: ModelCatalogProviding {
     private let store: LocalModelStore
     private let cloud: any ModelCatalogProviding
