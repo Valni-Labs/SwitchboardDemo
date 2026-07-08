@@ -6,9 +6,9 @@ struct ChatView: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack(alignment: .top, spacing: 16) {
-                LocalModelSectionView(viewModel: viewModel)
-                    .frame(maxWidth: .infinity, alignment: .leading)
                 VStack(alignment: .leading, spacing: 6) {
+                    Text("Cloud models")
+                        .font(.title3.bold())
                     HStack(alignment: .bottom, spacing: 8) {
                         VStack(alignment: .leading, spacing: 2) {
                             Text("Application Key")
@@ -39,6 +39,8 @@ struct ChatView: View {
                         .foregroundStyle(.secondary)
                 }
                 .frame(width: 416, alignment: .leading)
+                LocalModelSectionView(viewModel: viewModel)
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
             .padding()
 
@@ -103,7 +105,6 @@ struct ChatView: View {
                         .controlSize(.small)
                 }
                 Divider()
-                    .frame(height: 44)
                 TextField("Message", text: $viewModel.draft)
                     .textFieldStyle(.plain)
                     .onSubmit(submit)
@@ -111,11 +112,14 @@ struct ChatView: View {
                     .keyboardShortcut(.defaultAction)
                     .disabled(!viewModel.canSend)
             }
+            .frame(height: Self.inputBarHeight)
             .padding()
         }
         .frame(minWidth: 820, minHeight: 480)
         .task { await viewModel.loadModels() }
     }
+
+    private static let inputBarHeight: CGFloat = 60
 
     private func submit() {
         guard viewModel.canSend else { return }

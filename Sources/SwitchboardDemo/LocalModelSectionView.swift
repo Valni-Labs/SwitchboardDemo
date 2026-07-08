@@ -9,6 +9,8 @@ struct LocalModelSectionView: View {
         if let store = viewModel.localModelStore {
             VStack(alignment: .leading, spacing: 6) {
                 Text("Local models")
+                    .font(.title3.bold())
+                Text("Add local model")
                     .font(.caption.bold())
                 HStack(spacing: 8) {
                     TextField("huggingface.co/organization/model", text: $repositoryInput)
