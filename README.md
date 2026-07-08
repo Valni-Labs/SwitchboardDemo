@@ -13,7 +13,7 @@ The source is split so you can tell the Switchboard setup from the demo around i
 
 | Folder | What it is |
 |---|---|
-| `Sources/SwitchboardDemo/SwitchboardIntegration/` | The Switchboard setup. `SwitchboardModelCatalog` (picker list from the API), `SwitchboardChatService` (wire-format routing to the SDK adapters), `LocalModelStore` (on-device model lifecycle: add, download, persist, stream), `HybridServices` (composes cloud and local behind the app's two protocols), `DemoConfiguration` (base URL). Copy this folder as your starting point. |
+| `Sources/SwitchboardDemo/SwitchboardIntegration/` | The Switchboard setup. `SwitchboardModelCatalog` (picker list from the API), `SwitchboardChatService` (one `InferenceProvider` over the unified inference endpoint), `LocalModelStore` (on-device model lifecycle: add, download, persist, stream), `HybridServices` (composes cloud and local behind the app's two protocols), `DemoConfiguration` (base URL). Copy this folder as your starting point. |
 | everything else | This demo's chat UI and state: views, view model, transcript types, and the two small protocols (`ModelCatalogProviding`, `ChatStreaming`) the UI consumes. |
 
 The app talks to the integration layer only through those two protocols, wired once in `SwitchboardDemoApp`. One deliberate exception: the local-models section binds views directly to `LocalModel`, whose `@Published state` exists exactly for that purpose. Observing it for download progress is the intended SDK pattern, not a shortcut.

@@ -8,17 +8,6 @@ final class SwitchboardChatService: ChatStreaming, Sendable {
         self.baseURL = baseURL
     }
 
-    enum ServiceError: LocalizedError {
-        case unsupportedWireFormat(String)
-
-        var errorDescription: String? {
-            switch self {
-            case .unsupportedWireFormat(let wireFormat):
-                "This demo only speaks \(WireFormat.openAICompatible), \(WireFormat.anthropicMessages), and \(WireFormat.openAIResponses), but the selected model uses '\(wireFormat)'."
-            }
-        }
-    }
-
     struct PaywallError: LocalizedError {
         let event: PaywallEvent
 
@@ -39,10 +28,12 @@ final class SwitchboardChatService: ChatStreaming, Sendable {
         AsyncThrowingStream { continuation in
             let task = Task {
                 do {
-                    let provider = try makeProvider(
-                        model: model,
-                        applicationKey: applicationKey,
-                        endUserKey: endUserKey
+                    let provider = InferenceProvider(
+                        modelID: model.id,
+                        apiKey: applicationKey,
+                        endUserID: endUserKey,
+                        baseURL: baseURL,
+                        contextWindow: model.contextWindow
                     )
                     let messages = history.map { entry in
                         ChatMessage(role: entry.role.chatMessageRole, text: entry.text)
@@ -62,41 +53,6 @@ final class SwitchboardChatService: ChatStreaming, Sendable {
                 }
             }
             continuation.onTermination = { _ in task.cancel() }
-        }
-    }
-
-    private func makeProvider(
-        model: ModelOption,
-        applicationKey: String,
-        endUserKey: String?
-    ) throws -> RawGenerationProvider {
-        switch model.wireFormat {
-        case WireFormat.anthropicMessages:
-            return AnthropicMessagesAdapter(
-                modelID: model.id,
-                apiKey: applicationKey,
-                endUserID: endUserKey,
-                baseURL: baseURL,
-                contextWindow: model.contextWindow
-            )
-        case WireFormat.openAICompatible:
-            return SwitchboardProvider(
-                modelID: model.id,
-                apiKey: applicationKey,
-                endUserID: endUserKey,
-                baseURL: baseURL,
-                contextWindow: model.contextWindow
-            )
-        case WireFormat.openAIResponses:
-            return OpenAIResponsesAdapter(
-                modelID: model.id,
-                apiKey: applicationKey,
-                endUserID: endUserKey,
-                baseURL: baseURL,
-                contextWindow: model.contextWindow
-            )
-        default:
-            throw ServiceError.unsupportedWireFormat(model.wireFormat)
         }
     }
 }
