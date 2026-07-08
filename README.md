@@ -23,6 +23,8 @@ SWITCHBOARD_API_KEY=swb_... swift run
 
 Or open `Package.swift` in Xcode, set the environment variable in the scheme, and run the `SwitchboardDemo` target.
 
+First Xcode build only: the build stops with `Validate plug-in "CudaBuild" in package "mlx-swift"` — `mlx-swift` (pulled in by `SwitchboardLocal`) ships a build plugin that Xcode requires you to trust. Click the error in the Issue navigator, choose **Trust & Enable**, and build again. `swift run` and `swift build` are unaffected. Non-interactive `xcodebuild` invocations (CI, scripts) can pass `-skipPackagePluginValidation` instead; that flag bypasses Xcode's plugin trust check entirely, so reserve it for builds whose dependencies you control.
+
 ## Environment
 
 | Variable | Required | Purpose |
