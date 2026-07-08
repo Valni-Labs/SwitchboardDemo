@@ -1,40 +1,49 @@
 # SwitchboardDemo
 
-Minimal macOS chat app showing the two SDKs working together:
+Minimal macOS chat app showing cloud and on-device inference behind one seam:
 
-- [Switchboard](https://valni.ai) routes the chat completion.
-- [Linecard](https://valni.ai/linecard) supplies the model catalog that feeds the picker.
+- [Switchboard](https://valni.ai) routes chat completions to frontier models with your account key.
+- `SwitchboardLocal` runs open-weight MLX models on the Mac itself, with no key and no network after download.
 
-One window: pick a model, type, get a streamed reply.
+One window: enter a key or load a local model, pick from the model picker, type, get a streamed reply. The same transcript can flip between a 1B model on the Apple Neural Engine and a frontier model mid-conversation.
+
+## Anatomy
+
+The source is split so you can tell the Switchboard setup from the demo around it:
+
+| Folder | What it is |
+|---|---|
+| `Sources/SwitchboardDemo/SwitchboardIntegration/` | The Switchboard setup. `SwitchboardModelCatalog` (picker list from the API), `SwitchboardChatService` (wire-format routing to the SDK adapters), `LocalModelStore` (on-device model lifecycle: add, download, persist, stream), `HybridServices` (composes cloud and local behind the app's two protocols), `DemoConfiguration` (base URL). Copy this folder as your starting point. |
+| everything else | This demo's chat UI and state: views, view model, transcript types, and the two small protocols (`ModelCatalogProviding`, `ChatStreaming`) the UI consumes. |
+
+The app talks to the integration layer only through those two protocols, wired once in `SwitchboardDemoApp`. One deliberate exception: the local-models section binds views directly to `LocalModel`, whose `@Published state` exists exactly for that purpose. Observing it for download progress is the intended SDK pattern, not a shortcut.
 
 ## Get a key
 
-1. Sign in to the portal at [valni.ai/platform](https://valni.ai/platform).
-2. Open the **Switchboard** tab. Under API keys, name the key (for example `switchboard-demo`), leave the scope on **Company**, and mint.
-3. Copy the plaintext `swb_...` from the modal — it is shown once and never again. Only a hash is stored server-side.
+1. Sign in to the platform portal and open the **Switchboard** tab of your account.
+2. Under API keys, name the key (for example `switchboard-demo`), leave the scope on **Company**, and mint.
+3. Copy the plaintext `swb_...` from the modal. It is shown once and never again; only a hash is stored server-side.
 
 If the mint is rejected, complete your account entity setup (company name and entity type) on the same tab first.
 
 ## Run
 
 ```sh
-SWITCHBOARD_API_KEY=swb_... swift run
+swift run
 ```
 
-Or open `Package.swift` in Xcode, set the environment variable in the scheme, and run the `SwitchboardDemo` target.
+Or open `Package.swift` in Xcode and run the `SwitchboardDemo` target. Keys are entered in the app window; local models work with no key at all.
 
-First Xcode build only: the build stops with `Validate plug-in "CudaBuild" in package "mlx-swift"` — `mlx-swift` (pulled in by `SwitchboardLocal`) ships a build plugin that Xcode requires you to trust. Click the error in the Issue navigator, choose **Trust & Enable**, and build again. `swift run` and `swift build` are unaffected. Non-interactive `xcodebuild` invocations (CI, scripts) can pass `-skipPackagePluginValidation` instead; that flag bypasses Xcode's plugin trust check entirely, so reserve it for builds whose dependencies you control.
+First Xcode build only: the build stops with `Validate plug-in "CudaBuild" in package "mlx-swift"`. `mlx-swift` (pulled in by `SwitchboardLocal`) ships a build plugin that Xcode requires you to trust. Click the error in the Issue navigator, choose **Trust & Enable**, and build again. `swift run` and `swift build` are unaffected. Non-interactive `xcodebuild` invocations (CI, scripts) can pass `-skipPackagePluginValidation` instead; that flag bypasses Xcode's plugin trust check entirely, so reserve it for builds whose dependencies you control.
 
 ## Environment
 
 | Variable | Required | Purpose |
 |---|---|---|
-| `SWITCHBOARD_API_KEY` | Yes, to chat | Your `swb_...` key. The app launches without it but tells you to set it. |
-| `SWITCHBOARD_BASE_URL` | No | Defaults to `https://switchboard.valni.app`. |
-| `SWITCHBOARD_END_USER_ID` | No | Attributes usage to an end user on your account. |
+| `SWITCHBOARD_BASE_URL` | No | Defaults to the production Switchboard endpoint. |
 
-The `swb_` key is a server credential. This demo calls Switchboard directly because it is a local development tool; do not ship a key inside a distributed client.
+The `swb_` key is a server credential. This demo accepts it in the UI because it is a local development tool; do not ship a key inside a distributed client.
 
 ## Requirements
 
-macOS 14+, Swift 6 toolchain.
+macOS 14+, Swift 6 toolchain. On-device models additionally require Apple Silicon.
