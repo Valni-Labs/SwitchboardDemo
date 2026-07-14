@@ -57,12 +57,3 @@ final class SwitchboardInference: ChatStreaming, Sendable {
         }
     }
 }
-
-private extension TranscriptEntry.Role {
-    var chatMessageRole: ChatMessage.Role {
-        switch self {
-        case .user: .user
-        case .assistant: .assistant
-        }
-    }
-}
