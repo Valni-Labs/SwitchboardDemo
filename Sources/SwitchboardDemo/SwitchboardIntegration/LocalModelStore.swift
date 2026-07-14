@@ -139,9 +139,10 @@ final class LocalModelStore {
                 }
                 do {
                     try await Self.ensureReady(localModel)
-                    let messages = history.map { entry in
-                        ChatMessage(role: entry.role == .user ? .user : .assistant, text: entry.text)
-                    }
+                    let messages = [ChatMessage(role: .system, text: ChatDefaults.systemPrompt)]
+                        + history.map { entry in
+                            ChatMessage(role: entry.role.chatMessageRole, text: entry.text)
+                        }
                     for try await chunk in localModel.provider.generateRaw(messages: messages) {
                         if case .text(let piece) = chunk, !piece.isEmpty {
                             continuation.yield(piece)

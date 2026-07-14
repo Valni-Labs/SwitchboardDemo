@@ -6,3 +6,7 @@ protocol ChatStreaming: Sendable {
         history: [TranscriptEntry]
     ) -> AsyncThrowingStream<String, Error>
 }
+
+enum ChatDefaults {
+    static let systemPrompt = "You are a helpful assistant. Respond in English unless the user writes in another language."
+}

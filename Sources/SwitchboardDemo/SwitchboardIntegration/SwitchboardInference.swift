@@ -35,9 +35,10 @@ final class SwitchboardInference: ChatStreaming, Sendable {
                         baseURL: baseURL,
                         contextWindow: model.contextWindow
                     )
-                    let messages = history.map { entry in
-                        ChatMessage(role: entry.role.chatMessageRole, text: entry.text)
-                    }
+                    let messages = [ChatMessage(role: .system, text: ChatDefaults.systemPrompt)]
+                        + history.map { entry in
+                            ChatMessage(role: entry.role.chatMessageRole, text: entry.text)
+                        }
                     for try await chunk in provider.generateRaw(messages: messages) {
                         switch chunk {
                         case .text(let piece):
@@ -53,15 +54,6 @@ final class SwitchboardInference: ChatStreaming, Sendable {
                 }
             }
             continuation.onTermination = { _ in task.cancel() }
-        }
-    }
-}
-
-private extension TranscriptEntry.Role {
-    var chatMessageRole: ChatMessage.Role {
-        switch self {
-        case .user: .user
-        case .assistant: .assistant
         }
     }
 }
