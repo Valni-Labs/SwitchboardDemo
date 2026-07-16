@@ -2,7 +2,7 @@
 
 Minimal macOS chat app showing cloud and on-device inference behind one seam:
 
-- [Switchboard](https://valni.ai) serves every frontier model through one unified inference endpoint with your account key.
+- [Switchboard](https://valni.ai) is unified inference with per-end-user metering, spend controls, and billing built in; one endpoint serves the whole model catalog with your account key.
 - `SwitchboardLocal` runs open-weight MLX models on the Mac itself, with no key and no network after download.
 
 One window: enter a key or load a local model, pick from the model picker, type, get a streamed reply. The same transcript can flip between a 1B model running on Apple Silicon and a frontier model mid-conversation.
