@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import Switchboard
+import SwitchboardNative
 import SwitchboardLocal
 
 @MainActor
@@ -139,11 +140,12 @@ final class LocalModelStore {
                 }
                 do {
                     try await Self.ensureReady(localModel)
-                    let messages = [ChatMessage(role: .system, text: ChatDefaults.systemPrompt)]
-                        + history.map { entry in
-                            ChatMessage(role: entry.role.chatMessageRole, text: entry.text)
-                        }
-                    for try await chunk in localModel.provider.generateRaw(messages: messages) {
+                    let body = RouterBody.openaiGeneric(NativeChatBody.openAIChatRequest(
+                        modelID: modelID,
+                        history: history,
+                        systemPrompt: ChatDefaults.systemPrompt
+                    ))
+                    for try await chunk in localModel.provider.generate(body) {
                         if case .text(let piece) = chunk, !piece.isEmpty {
                             continuation.yield(piece)
                         }

@@ -1,5 +1,6 @@
 import Foundation
 import Switchboard
+import SwitchboardNative
 
 final class SwitchboardInference: ChatStreaming, Sendable {
     private let baseURL: URL
@@ -28,24 +29,26 @@ final class SwitchboardInference: ChatStreaming, Sendable {
         AsyncThrowingStream { continuation in
             let task = Task {
                 do {
-                    let provider = InferenceProvider(
-                        modelID: model.id,
+                    let provider = try InferenceProvider(
                         apiKey: applicationKey,
-                        endUserID: endUserKey,
+                        endUserID: endUserKey ?? "",
                         baseURL: baseURL,
                         contextWindow: model.contextWindow
                     )
-                    let messages = [ChatMessage(role: .system, text: ChatDefaults.systemPrompt)]
-                        + history.map { entry in
-                            ChatMessage(role: entry.role.chatMessageRole, text: entry.text)
-                        }
-                    for try await chunk in provider.generateRaw(messages: messages) {
+                    let body = NativeChatBody.make(
+                        model: model,
+                        history: history,
+                        systemPrompt: ChatDefaults.systemPrompt
+                    )
+                    for try await chunk in provider.generate(body) {
                         switch chunk {
                         case .text(let piece):
                             if !piece.isEmpty { continuation.yield(piece) }
                         case .paywall(let event):
                             continuation.finish(throwing: PaywallError(event: event))
                             return
+                        case .reasoning, .toolCall:
+                            break
                         }
                     }
                     continuation.finish()
