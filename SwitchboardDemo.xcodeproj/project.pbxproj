@@ -24,7 +24,6 @@
 		D300000000000000000001CB /* TranscriptEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D300000000000000000001BB /* TranscriptEntryView.swift */; };
 		D300000000000000000001D5 /* Switchboard in Frameworks */ = {isa = PBXBuildFile; productRef = D300000000000000000001D3 /* Switchboard */; };
 		D30000000000000000000202 /* NativeChatBody.swift in Sources */ = {isa = PBXBuildFile; fileRef = D30000000000000000000201 /* NativeChatBody.swift */; };
-		D30000000000000000000204 /* SwitchboardNative in Frameworks */ = {isa = PBXBuildFile; productRef = D30000000000000000000203 /* SwitchboardNative */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,7 +51,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				D300000000000000000001D5 /* Switchboard in Frameworks */,
-				D30000000000000000000204 /* SwitchboardNative in Frameworks */,
 				D300000000000000000001F4 /* SwitchboardLocal in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -123,7 +121,6 @@
 			name = SwitchboardDemo;
 			packageProductDependencies = (
 				D300000000000000000001D3 /* Switchboard */,
-				D30000000000000000000203 /* SwitchboardNative */,
 				D300000000000000000001F3 /* SwitchboardLocal */,
 			);
 			productName = SwitchboardDemo;
@@ -377,10 +374,6 @@
 		D300000000000000000001D3 /* Switchboard */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Switchboard;
-		};
-		D30000000000000000000203 /* SwitchboardNative */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = SwitchboardNative;
 		};
 		D300000000000000000001F3 /* SwitchboardLocal */ = {
 			isa = XCSwiftPackageProductDependency;
