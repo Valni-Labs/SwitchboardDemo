@@ -12,7 +12,6 @@ let package = Package(
             name: "SwitchboardDemo",
             dependencies: [
                 .product(name: "Switchboard", package: "Switchboard"),
-                .product(name: "SwitchboardNative", package: "Switchboard"),
                 .product(name: "SwitchboardLocal", package: "Switchboard"),
             ]
         ),

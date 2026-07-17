@@ -1,4 +1,4 @@
-import SwitchboardNative
+import Switchboard
 
 enum SwitchboardWireFormat {
     static let anthropicMessages = "anthropic-messages"
