@@ -29,9 +29,12 @@ final class SwitchboardInference: ChatStreaming, Sendable {
         AsyncThrowingStream { continuation in
             let task = Task {
                 do {
+                    guard let endUserKey, !endUserKey.isEmpty else {
+                        throw ProviderError.missingEndUserID
+                    }
                     let provider = try InferenceProvider(
                         apiKey: applicationKey,
-                        endUserID: endUserKey ?? "",
+                        endUserID: endUserKey,
                         baseURL: baseURL,
                         contextWindow: model.contextWindow
                     )
