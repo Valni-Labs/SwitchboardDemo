@@ -1,5 +1,5 @@
 {
-  "originHash" : "ac7f74e867312cdec7ffce2ed9cd1b42145864af01ed600d2cd3066e5e3f0b0b",
+  "originHash" : "d848f5c9952f56b1b4628254ec8295cadd9804ad4e2f23397a804d793d1fef16",
   "pins" : [
     {
       "identity" : "eventsource",
@@ -134,15 +134,6 @@
       "state" : {
         "revision" : "2fa33e1f5e7131a7fc64c28e6d161dcec0d24820",
         "version" : "1.3.3"
-      }
-    },
-    {
-      "identity" : "switchboard-swift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/valni-labs/switchboard-swift",
-      "state" : {
-        "revision" : "caa3e7c4fba9cacee7443bd7194ed5aa1b6554ee",
-        "version" : "0.5.0"
       }
     },
     {
