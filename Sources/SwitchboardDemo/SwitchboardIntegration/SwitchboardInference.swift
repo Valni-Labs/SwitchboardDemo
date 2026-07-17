@@ -1,6 +1,5 @@
 import Foundation
 import Switchboard
-import SwitchboardNative
 
 final class SwitchboardInference: ChatStreaming, Sendable {
     private let baseURL: URL

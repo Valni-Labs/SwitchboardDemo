@@ -1,7 +1,6 @@
 import Foundation
 import Combine
 import Switchboard
-import SwitchboardNative
 import SwitchboardLocal
 
 @MainActor
