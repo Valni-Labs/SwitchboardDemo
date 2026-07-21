@@ -3,6 +3,7 @@ import Switchboard
 enum SwitchboardWireFormat {
     static let anthropicMessages = "anthropic-messages"
     static let openaiResponses = "openai-responses"
+    static let openaiChat = "openai-chat"
 }
 
 enum NativeChatBody {
