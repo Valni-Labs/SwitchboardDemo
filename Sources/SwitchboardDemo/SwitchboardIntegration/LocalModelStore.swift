@@ -18,7 +18,7 @@ final class LocalModelStore {
 
     static let suggestions = [
         Suggestion(displayName: "Llama 3.2 1B", repositoryID: "mlx-community/Llama-3.2-1B-Instruct-4bit", approximateSize: "0.7 GB"),
-        Suggestion(displayName: "Qwen 2.5 3B", repositoryID: "mlx-community/Qwen2.5-3B-Instruct-4bit", approximateSize: "1.9 GB"),
+        Suggestion(displayName: "Qwen3 30B A3B", repositoryID: "mlx-community/Qwen3-30B-A3B-Instruct-2507-4bit", approximateSize: "16 GB"),
     ]
 
     enum InputError: LocalizedError {
