@@ -10,16 +10,27 @@ final class SwitchboardModelCatalog: ModelCatalogProviding, Sendable {
 
     func loadModels(applicationKey: String) async throws -> [ModelOption] {
         let client = Client(apiKey: applicationKey, baseURL: baseURL)
-        let pickerModels = try await client.models()
-        return pickerModels
-            .map { pickerModel in
-                ModelOption(
-                    id: pickerModel.id,
-                    displayName: pickerModel.displayName,
-                    wireFormat: pickerModel.wireFormat,
-                    contextWindow: pickerModel.contextWindow
-                )
+        let page = try await client.models()
+        return page.models
+            .compactMap { record in
+                Self.wireFormatTag(for: record.kind).map { tag in
+                    ModelOption(
+                        id: record.id,
+                        displayName: record.id,
+                        wireFormat: tag,
+                        contextWindow: nil
+                    )
+                }
             }
             .sorted { $0.displayName.localizedCaseInsensitiveCompare($1.displayName) == .orderedAscending }
+    }
+
+    private static func wireFormatTag(for kind: ProfileByKind) -> String? {
+        switch kind {
+        case .anthropic: SwitchboardWireFormat.anthropicMessages
+        case .openaiPro: SwitchboardWireFormat.openaiResponses
+        case .openaiGeneric: SwitchboardWireFormat.openaiChat
+        case .google, .unrecognized: nil
+        }
     }
 }

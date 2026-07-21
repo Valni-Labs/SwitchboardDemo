@@ -5,14 +5,14 @@ let package = Package(
     name: "SwitchboardDemo",
     platforms: [.macOS(.v14)],
     dependencies: [
-        .package(path: "../Switchboard"),
+        .package(url: "https://github.com/valni-labs/switchboard-swift", from: "0.13.0"),
     ],
     targets: [
         .executableTarget(
             name: "SwitchboardDemo",
             dependencies: [
-                .product(name: "Switchboard", package: "Switchboard"),
-                .product(name: "SwitchboardLocal", package: "Switchboard"),
+                .product(name: "Switchboard", package: "switchboard-swift"),
+                .product(name: "SwitchboardLocal", package: "switchboard-swift"),
             ]
         ),
         .testTarget(

@@ -28,8 +28,6 @@ If the mint is rejected, complete your account entity setup (company name and en
 
 ## Run
 
-The package depends on sibling checkouts of the Switchboard SDK and its generated types package: clone [Switchboard](https://github.com/Valni-Labs/Switchboard) and [SwitchboardNative](https://github.com/Valni-Labs/SwitchboardNative) next to this repository so `../Switchboard` and `../SwitchboardNative` resolve.
-
 ```sh
 swift run
 ```
